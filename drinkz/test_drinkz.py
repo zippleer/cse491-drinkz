@@ -44,6 +44,11 @@ def test_bulk_load_inventory_1():
     
     data = "Johnnie Walker,Black Label,1000 ml"
     fp = StringIO(data)                 # make this look like a file handle
-    load_bulk_data.load_inventory(fp)
+    n = load_bulk_data.load_inventory(fp)
 
     assert db.check_inventory('Johnnie Walker', 'Black Label')
+    assert n == 1, n
+
+def test_bulk_load_bottle_types_1():
+    # FIXME
+    assert False, "this needs to be implemented."
