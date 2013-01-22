@@ -19,7 +19,7 @@ def test_add_bottle_type_1():
     db._reset_db()
 
     db.add_bottle_type('Johnnie Walker', 'Black Label', 'blended scotch')
-    assert db._check_bottle_type_exists('Jonnie Walker', 'Black Label')
+    assert db._check_bottle_type_exists('Johnnie Walker', 'Black Label')
 
 def test_add_to_inventory_1():
     db._reset_db()
