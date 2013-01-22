@@ -50,5 +50,11 @@ def test_bulk_load_inventory_1():
     assert n == 1, n
 
 def test_bulk_load_bottle_types_1():
-    # FIXME
-    assert False, "this needs to be implemented."
+    db._reset_db()
+
+    data = "Johnnie Walker,Black Label,blended scotch"
+    fp = StringIO(data)                 # make this look like a file handle
+    n = load_bulk_data.load_bottle_types(fp)
+
+    assert db._check_bottle_type_exists('Johnnie Walker', 'Black Label')
+    assert n == 1, n
