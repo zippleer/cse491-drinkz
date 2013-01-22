@@ -32,7 +32,7 @@ def load_bottle_types(fp):
 
     return n
 
-def load_inventory(fp, bottle_types_db):
+def load_inventory(fp):
     """
     Loads in data of the form manufacturer/liquor name/amount from a CSV file.
 
