@@ -43,3 +43,8 @@ def check_inventory(mfg, liquor):
             return True
         
     return False
+
+def get_liquor_inventory():
+    "Retrieve all liquor types in inventory, in tuple form: (mfg, liquor)."
+    for (m, l, _) in _inventory_db:
+        yield m, l
