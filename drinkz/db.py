@@ -43,3 +43,12 @@ def check_inventory(mfg, liquor):
             return True
         
     return False
+
+def get_liquor_amount(mfg, liquor):
+    "Retrieve the total amount of any given liquor currently in inventory."
+    amounts = []
+    for (m, l, amount) in _inventory_db:
+        if mfg == m and liquor == l:
+            amounts.append(amount)
+
+    return amounts[0]
