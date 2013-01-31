@@ -52,3 +52,8 @@ def get_liquor_amount(mfg, liquor):
             amounts.append(amount)
 
     return amounts[0]
+
+def get_liquor_inventory():
+    "Retrieve all liquor types in inventory, in tuple form: (mfg, liquor)."
+    for (m, l, _) in _inventory_db:
+        yield m, l
