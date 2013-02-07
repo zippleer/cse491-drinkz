@@ -2,6 +2,8 @@
 Database functionality for drinkz information.
 """
 
+import string
+
 # private singleton variables at module level
 _bottle_types_db = []
 _inventory_db = []
@@ -47,11 +49,34 @@ def check_inventory(mfg, liquor):
 def get_liquor_amount(mfg, liquor):
     "Retrieve the total amount of any given liquor currently in inventory."
     amounts = []
-    for (m, l, amount) in _inventory_db:
-        if mfg == m and liquor == l:
-            amounts.append(amount)
+    totals = []
+    
+    total = 0
+    
+    x = 'ml'
+    o = 'oz'
+    
+    for (mf, li, am)  in _inventory_db:
+        if mfg == mf and liquor == li:
+            amounts.append(am)
+    
+    
+    for conversion in amounts:
+        volume, measurement = conversion.split()
+            
+        if measurement == x:
+            volume = int(volume)
+            total += volume
+            
+        elif measurement == o:
+            volume = float(volume)
+            vc = volume * 29.5735
+            total += vc
+            
+    rejoin = ' '.join([str(total),x])        
+    totals.append(rejoin)
 
-    return amounts[0]
+    return totals[0]
 
 def get_liquor_inventory():
     "Retrieve all liquor types in inventory, in tuple form: (mfg, liquor)."
