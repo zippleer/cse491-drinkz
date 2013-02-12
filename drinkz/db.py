@@ -49,34 +49,33 @@ def check_inventory(mfg, liquor):
 def get_liquor_amount(mfg, liquor):
     "Retrieve the total amount of any given liquor currently in inventory."
     amounts = []
-    totals = []
-    
-    total = 0
-    
-    x = 'ml'
-    o = 'oz'
     
     for (mf, li, am)  in _inventory_db:
         if mfg == mf and liquor == li:
             amounts.append(am)
     
+    total = 0.0
+    
+    x = 'ml'
+    o = 'oz'
+    
     
     for conversion in amounts:
         volume, measurement = conversion.split()
+        volume = float(volume)
+        measurement = measurement.lower()
             
         if measurement == x:
-            volume = int(volume)
             total += volume
             
         elif measurement == o:
-            volume = float(volume)
             vc = volume * 29.5735
             total += vc
-            
-    rejoin = ' '.join([str(total),x])        
-    totals.append(rejoin)
+        
+        else:
+            raise Exception('Unknown unit %s' % measurement)
 
-    return totals[0]
+    return '%s ml' % (total,)
 
 def get_liquor_inventory():
     "Retrieve all liquor types in inventory, in tuple form: (mfg, liquor)."

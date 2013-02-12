@@ -16,9 +16,9 @@ from . import db                        # import from local packag
 def data_reader(fp):
     
     reader = csv.reader(fp)
-    x = []
+    
     for line in reader:
-        if line[0].strip().startswith('#'):
+        if not line or not line[0].strip() or line[0].startswith('#'):
             continue
         
         (mfg, name, typ) = line
@@ -39,13 +39,16 @@ def load_bottle_types(fp):
     x = []
     n = 0
     
-    for mfg, name, typ in new_reader:
+    for line in new_reader:
         try:
-            db.add_bottle_type(mfg, name, typ)
-            n += 1
-        except:
-            print 'failed to add bottle type to inv'
-
+            (mfg, name, typ) = line
+        except ValueError:
+            print 'failed to add to inv'
+            continue
+        
+        n += 1
+        db.add_bottle_type(mfg, name, typ)
+        
     return n
    
 
@@ -66,11 +69,16 @@ def load_inventory(fp):
 
     x = []
     n = 0
-    for mfg, name, amount in new_reader:
+    
+    for line in new_reader:
         try:
-            db.add_to_inventory(mfg, name, amount)
+            (mfg, name, amount) = line
             n += 1
-        except db.LiquorMissing:
+        except ValueError:
             print 'failed to add to inv'
+            continue
+        
+        n += 1
+        db.add_to_inventory(mfg, name, amount)
 
     return n

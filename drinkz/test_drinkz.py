@@ -50,7 +50,7 @@ def test_get_liquor_amount_1():
     db.add_to_inventory('Johnnie Walker', 'Black Label', '1000 ml')
     amount = db.get_liquor_amount('Johnnie Walker', 'Black Label')
     print amount
-    assert amount == '1000 ml', amount
+    assert amount == '1000.0 ml', amount
 
 def test_bulk_load_inventory_1():
     db._reset_db()
@@ -62,7 +62,7 @@ def test_bulk_load_inventory_1():
     n = load_bulk_data.load_inventory(fp)
 
     assert db.check_inventory('Johnnie Walker', 'Black Label')
-    assert n == 1, n
+    assert n == 2, n
 
 def test_get_liquor_amount_2():
     db._reset_db()
@@ -74,7 +74,7 @@ def test_get_liquor_amount_2():
     n = load_bulk_data.load_inventory(fp)
 
     amount = db.get_liquor_amount('Johnnie Walker', 'Black Label')
-    assert amount == '1000 ml', amount
+    assert amount == '1000.0 ml', amount
 
 def test_bulk_load_bottle_types_1():
     db._reset_db()
@@ -82,6 +82,7 @@ def test_bulk_load_bottle_types_1():
     data = "Johnnie Walker,Black Label,blended scotch"
     fp = StringIO(data)                 # make this look like a file handle
     n = load_bulk_data.load_bottle_types(fp)
+    
 
     assert db._check_bottle_type_exists('Johnnie Walker', 'Black Label')
     assert n == 1, n
@@ -99,6 +100,8 @@ def test_script_load_bottle_types_whitespace():
     exit_code = module.main([scriptpath, 'test-data/bottle-types-data-2.txt'])
 
     assert exit_code == 0, 'non zero exit code %s' % exit_code
+    
+    assert db._check_bottle_type_exists('Johnnie Walker','Black Label')
     
 def test_get_liquor_inventory():
     db._reset_db()
@@ -121,6 +124,8 @@ def test_amount():
     db.add_to_inventory('Johnnie Walker', 'Black Label', '1000 ml')
     db.add_to_inventory('Johnnie Walker', 'Black Label', '1000 oz')
     
-    assert db.get_liquor_amount('Johnnie Walker', 'Black Label') == 31573.5
+    print db.get_liquor_amount('Johnnie Walker', 'Black Label')
+    
+    assert db.get_liquor_amount('Johnnie Walker', 'Black Label') == '31573.5 ml'
    
     

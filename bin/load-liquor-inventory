@@ -5,20 +5,21 @@ import _mypath
 from drinkz.load_bulk_data import load_inventory, load_bottle_types
 
 def main(args):
-   if len(args) != 2:
-      print >>sys.stderr, 'Usage: %s file_to_load.csv'
+   if len(args) != 3:
+      print >>sys.stderr, 'Usage: %s file_to_load.csv' % args[0]
       return -1
 
-   filename = args[1]
+   type_file = args[1]
+   inv_file = args[2]
 
-   fp = open(filename)
+   fp = open(type_file)
    try:
       m = load_bottle_types(fp)
 
    finally:
       fp.close()
       
-   fp = open(filename)
+   fp = open(inv_file)
    try:
       n = load_inventory(fp)
    finally:
