@@ -48,7 +48,7 @@ def test_get_liquor_amount_1():
     db.add_bottle_type('Johnnie Walker', 'Black Label', 'blended scotch')
     db.add_to_inventory('Johnnie Walker', 'Black Label', '1000 ml')
     amount = db.get_liquor_amount('Johnnie Walker', 'Black Label')
-    assert amount == '1000 ml', amount
+    assert amount == '1000.0 ml', amount
 
 def test_bulk_load_inventory_1():
     db._reset_db()
@@ -96,7 +96,46 @@ def test_get_liquor_amount_2():
     n = load_bulk_data.load_inventory(fp)
 
     amount = db.get_liquor_amount('Johnnie Walker', 'Black Label')
-    assert amount == '1000 ml', amount
+    assert amount == '1000.0 ml', amount
+
+def test_get_liquor_amount_3():
+    db._reset_db()
+
+    db.add_bottle_type('Johnnie Walker', 'Black Label', 'blended scotch')
+    
+    data = "Johnnie Walker,Black Label,1000 ml\nJohnnie Walker,Black Label,500 ml"
+    fp = StringIO(data)                 # make this look like a file handle
+    n = load_bulk_data.load_inventory(fp)
+
+    amount = db.get_liquor_amount('Johnnie Walker', 'Black Label')
+    assert amount == '1500.0 ml', amount
+
+def test_get_liquor_amount_4():
+    db._reset_db()
+
+    db.add_bottle_type('Johnnie Walker', 'Black Label', 'blended scotch')
+    
+    data = "Johnnie Walker,Black Label,1000 ml\nJohnnie Walker,Black Label,50 oz"
+    fp = StringIO(data)                 # make this look like a file handle
+    n = load_bulk_data.load_inventory(fp)
+
+    amount = db.get_liquor_amount('Johnnie Walker', 'Black Label')
+    assert amount == '2478.675 ml', amount
+
+def test_get_liquor_amount_5():
+    db._reset_db()
+
+    db.add_bottle_type('Johnnie Walker', 'Black Label', 'blended scotch')
+    
+    data = "Johnnie Walker,Black Label,1000 ml\nJohnnie Walker,Black Label,50 gallons"
+    fp = StringIO(data)                 # make this look like a file handle
+    n = load_bulk_data.load_inventory(fp)
+
+    try:
+        amount = db.get_liquor_amount('Johnnie Walker', 'Black Label')
+        assert 0
+    except:
+        pass                            # we expect to see an error about gallons
 
 def test_bulk_load_bottle_types_1():
     db._reset_db()
