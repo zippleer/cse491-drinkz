@@ -27,9 +27,9 @@ def load_bottle_types(fp):
     x = []
     n = 0
     for line in reader:
-        if line[0].startswith('#'):
+        if not line or not line[0].strip() or line[0].startswith('#'):
             continue
-        
+
         (mfg, name, typ) = line
         n += 1
         db.add_bottle_type(mfg, name, typ)
@@ -53,7 +53,14 @@ def load_inventory(fp):
 
     x = []
     n = 0
-    for (mfg, name, amount) in reader:
+
+    for line in reader:
+        print 'at line', (line,)
+        if not line or not line[0].strip() or line[0].startswith('#'):
+            continue
+
+        (mfg, name, amount) = line
+    
         n += 1
         db.add_to_inventory(mfg, name, amount)
 
