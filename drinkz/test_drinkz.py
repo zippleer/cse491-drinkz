@@ -75,6 +75,17 @@ def test_bulk_load_inventory_2():
     assert db.check_inventory('Johnnie Walker', 'Black Label')
     assert n == 2, n
 
+def test_bulk_load_inventory_3():
+    db._reset_db()
+
+    db.add_bottle_type('Johnnie Walker', 'Black Label', 'blended scotch')
+    data = "Johnnie Walker,Black Label,1000 ml\na,b\n"
+    fp = StringIO(data)                 # make this look like a file handle
+    n = load_bulk_data.load_inventory(fp)
+
+    assert db.check_inventory('Johnnie Walker', 'Black Label')
+    assert n == 1, n
+
 def test_get_liquor_amount_2():
     db._reset_db()
 
@@ -116,6 +127,15 @@ def test_bulk_load_bottle_types_3():
 
     assert db._check_bottle_type_exists('Johnnie Walker', 'Black Label')
     assert n == 2, n
+
+def test_bulk_load_bottle_types_4():
+    db._reset_db()
+
+    data = "a,b"
+    fp = StringIO(data)                 # make this look like a file handle
+    n = load_bulk_data.load_bottle_types(fp)
+
+    assert n == 0, n
 
 def test_script_load_bottle_types_1():
     scriptpath = 'bin/load-liquor-types'
