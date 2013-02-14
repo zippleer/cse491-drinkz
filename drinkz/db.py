@@ -119,7 +119,7 @@ def add_strings(str1, str2):
         v2 = curr_volume * 29.5735
         total += v2
     else:
-        raise Exception('Unknown unit %s' % measurement)
+        raise Exception('Unknown unit %s' % curr_measurement)
     
     final = str(total)+' ml'
     return final
