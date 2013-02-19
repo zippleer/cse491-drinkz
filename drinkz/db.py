@@ -38,11 +38,32 @@ def add_to_inventory(mfg, liquor, amount):
 
     if (mfg, liquor) in _inventory_db:
         curr_amount = _inventory_db[(mfg, liquor)]
-        total_amount = add_strings(curr_amount, amount)
+        total_amount = add_amounts(curr_amount, amount)
         _inventory_db[(mfg, liquor)] = total_amount
         
     else:
-        _inventory_db[(mfg, liquor)] = amount
+        x = 'ml'
+        o = 'oz'
+        g = 'gallon'
+        gs = 'gallons'
+        
+        volume, measurement = amount.split()
+        volume = float(volume)
+        measurement = measurement.lower()
+            
+        if measurement == x:
+            _inventory_db[(mfg, liquor)] = volume
+            
+        elif measurement == o:
+            vc = volume * 29.5735
+            _inventory_db[(mfg, liquor)] = vc
+            
+        elif measurement == g or measurement == gs:
+            vg = volume * 3785.41
+            _inventory_db[(mfg, liquor)] = vg
+        
+        else:
+            raise Exception('Unknown unit %s' % measurement)
         
 
 def check_inventory(mfg, liquor):
@@ -64,24 +85,14 @@ def get_liquor_amount(mfg, liquor):
     
     x = 'ml'
     o = 'oz'
+    g = 'gallon'
+    gs = 'gallons'
     
     
-    for conversion in amounts:
-        volume, measurement = conversion.split()
-        volume = float(volume)
-        measurement = measurement.lower()
-            
-        if measurement == x:
-            total += volume
-            
-        elif measurement == o:
-            vc = volume * 29.5735
-            total += vc
-        
-        else:
-            raise Exception('Unknown unit %s' % measurement)
+    for volume in amounts:
+        total += volume
 
-    return '%s ml' % (total,)
+    return total
 
 def get_liquor_inventory():
     "Retrieve all liquor types in inventory, in tuple form: (mfg, liquor)."
@@ -89,28 +100,19 @@ def get_liquor_inventory():
         print key
         yield key
         
-def add_strings(str1, str2):
+def add_amounts(value, str2): 
     total = 0.0
+    
     x = 'ml'
     o = 'oz'
-    
-    volume, measurement =  str1.split()
-    volume = float(volume)
-    measurement = measurement.lower()
+    g = 'gallon'
+    gs = 'gallons'
     
     curr_volume, curr_measurement = str2.split()
     curr_volume = float(curr_volume)
     curr_measurement = curr_measurement.lower()
     
-    if measurement == x:
-        total += volume
-        
-    elif measurement == o:
-        v1 = volume * 29.5735
-        total += v1
-    
-    else:
-        raise Exception('Unknown unit %s' % measurement)
+    total += value
     
     if curr_measurement == x:
         total += curr_volume
@@ -118,9 +120,14 @@ def add_strings(str1, str2):
     elif curr_measurement == o:
         v2 = curr_volume * 29.5735
         total += v2
+        
+    elif curr_measurement == g or curr_measurement == gs:
+        vg2 = curr_volume * 3785.41
+        total += vg2
+        
     else:
         raise Exception('Unknown unit %s' % curr_measurement)
     
-    final = str(total)+' ml'
-    return final
+    
+    return total
 

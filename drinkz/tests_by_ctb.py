@@ -46,4 +46,4 @@ def test_script_load_liquor_inventory():
 
     assert exit_code == 0, 'non zero exit code %s' % exit_code
     amount = db.get_liquor_amount('Johnnie Walker', 'Black Label')
-    assert amount == 1234
+    assert amount == 1234.0
