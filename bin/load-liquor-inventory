@@ -6,7 +6,10 @@ from drinkz.load_bulk_data import load_inventory, load_bottle_types
 
 def main(args):
    if len(args) != 3:
+
       print >>sys.stderr, 'Usage: %s file_to_load.csv' % args[0]
+      print sys.stderr, 'Usage: %s file_to_load.csv' % args[0]
+
       return -1
 
    type_file = args[1]
