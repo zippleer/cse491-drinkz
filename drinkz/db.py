@@ -56,6 +56,8 @@ def convert_to_ml(amount):
 
     if units == 'ml':
         pass
+    elif units == 'liter':
+        num = 1000.0 * num
     elif units == 'oz':
         num = 29.5735 * num
     elif units == 'gallon' or units == 'gallons':
@@ -79,3 +81,13 @@ def get_recipe(name):
 
 def get_all_recipes():
     return _recipes.values()
+
+def check_inventory_for_type(generic_type):
+    matching_ml = []
+    for (m, l, t) in _bottle_types_db:
+        if t == generic_type:
+            amount = _inventory_db.get((m, l), 0.0)
+            matching_ml.append((m, l, amount))
+
+    return matching_ml
+
