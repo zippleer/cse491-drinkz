@@ -68,7 +68,7 @@ def test_bulk_load_inventory_2():
     db.add_bottle_type('Johnnie Walker', 'Black Label', 'blended scotch')
     db.add_bottle_type('a', 'b', 'xxx')
     
-    data = "Johnnie Walker,Black Label,1000 ml\n   \n\n# comment\na,b,c"
+    data = "Johnnie Walker,Black Label,1000 ml\n   \n\n# comment\na,b,10 ml"
     fp = StringIO(data)                 # make this look like a file handle
     n = load_bulk_data.load_inventory(fp)
 
