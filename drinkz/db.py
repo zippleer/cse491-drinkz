@@ -62,12 +62,19 @@ def get_liquor_amount(mfg, liquor):
             total += num
         elif units == 'oz':
             total += 29.5735 * num
+        elif units == 'gallon':
+            total += 3785.41 * num
         else:
             raise Exception("unknown unit %s" % units)
 
-    return "%s ml" % (total,)
+    return total
 
 def get_liquor_inventory():
     "Retrieve all liquor types in inventory, in tuple form: (mfg, liquor)."
+
+    nodups = set()
     for (m, l, _) in _inventory_db:
+        if (m,l) in nodups:
+            continue
+        nodups.add((m, l))
         yield m, l
