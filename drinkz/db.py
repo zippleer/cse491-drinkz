@@ -5,12 +5,14 @@ Database functionality for drinkz information.
 # private singleton variables at module level
 _bottle_types_db = set()
 _inventory_db = {}
+_recipes = {}
 
 def _reset_db():
     "A method only to be used during testing -- toss the existing db info."
-    global _bottle_types_db, _inventory_db
+    global _bottle_types_db, _inventory_db, _recipes
     _bottle_types_db = set()
     _inventory_db = {}
+    _recipes = {}
 
 # exceptions in Python inherit from Exception and generally don't need to
 # override any methods.
@@ -68,3 +70,12 @@ def get_liquor_inventory():
 
     for m, l in _inventory_db:
         yield m, l
+
+def add_recipe(r):
+    _recipes[r.name] = r
+
+def get_recipe(name):
+    return _recipes.get(name)
+
+def get_all_recipes():
+    return _recipes.values()
