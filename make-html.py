@@ -15,22 +15,29 @@ db.add_to_inventory('Gray Goose', 'vodka', '1 liter')
 
 db.add_bottle_type('Rossi', 'extra dry vermouth', 'vermouth')
 db.add_to_inventory('Rossi', 'extra dry vermouth', '24 oz')
+
+db.add_bottle_type('Various', 'Blue Curacao', 'liqeur')
+db.add_to_inventory('Various', 'Blue Curacao', '1 liter')
+
+db.add_bottle_type('Bombay', 'Sapphire', 'gin')
+db.add_to_inventory('Bombay', 'Sapphire', '750 ml')
+
+db.add_bottle_type('Bacardi', 'Gold', 'rum')
+db.add_to_inventory('Bacardi', 'Gold', '750 ml')
+
+db.add_bottle_type('Patron', 'Silver', 'tequila')
+db.add_to_inventory('Patron', 'Silver', '750 ml')
     
-r = recipes.Recipe('vomit inducing martini', [('orange juice',
-                                                    '6 oz'),
-                                                    ('vermouth',
-                                                    '1.5 oz')])
+r = recipes.Recipe('vomit inducing martini', [('orange juice','6 oz'),('vermouth','1.5 oz')])
 db.add_recipe(r)
 
-r2 = recipes.Recipe('vodka martini', [('unflavored vodka', '6 oz'),
-                                        ('vermouth', '1.5 oz')])
+r2 = recipes.Recipe('vodka martini', [('unflavored vodka', '6 oz'),('vermouth', '1.5 oz')])
 db.add_recipe(r2)
 
-r3 = recipes.Recipe('vomit inducing martini', [('orange juice',
-                                                    '6 oz'),
-                                                    ('vermouth',
-                                                    '1.5 oz')])
+r3 = recipes.Recipe('Adios MotherF*cker!', [('tequila','1 oz'),('gin','1 oz'),('rum','1 oz'),('liquer','2 oz'),("Sprite","2 oz")])
 db.add_recipe(r3)
+
+
 
 try:
     os.mkdir('html')
