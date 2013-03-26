@@ -1,8 +1,11 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 Run like so:
 
    python2.7 app.py
 =======
+=======
+>>>>>>> 51a062d8a5c38e515b347ebdfbb3e57d468fa662
 Class project stuff for:
 
 http://msu-web-dev.readthedocs.org/en/latest/
@@ -22,4 +25,12 @@ Hmmmm... a startup idea is born!
 Running the tests:
 
 To run the tests, 'nosetests'.  'nosetests -v' will give you the test names.
+<<<<<<< HEAD
 >>>>>>> 3a62d5c94b0ca53b2f87ea9ed3ef8b7d1887583e
+=======
+=======
+Run like so:
+
+   python2.7 app.py
+>>>>>>> d4fe65f9476679a4d26320402c029a75b1bfde1a
+>>>>>>> 51a062d8a5c38e515b347ebdfbb3e57d468fa662
