@@ -27,7 +27,6 @@ class TestBasicRecipeStuff(unittest.TestCase):
         
     def test_get_recipe_1(self):
         r = recipes.Recipe('scotch on the rocks', [('blended scotch','4 oz')])
-
         db.add_recipe(r)
 
         x = db.get_recipe('scotch on the rocks')
