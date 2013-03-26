@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Class project stuff for:
 
 http://msu-web-dev.readthedocs.org/en/latest/
@@ -17,3 +18,8 @@ Hmmmm... a startup idea is born!
 Running the tests:
 
 To run the tests, 'nosetests'.  'nosetests -v' will give you the test names.
+=======
+Run like so:
+
+   python2.7 app.py
+>>>>>>> d4fe65f9476679a4d26320402c029a75b1bfde1a

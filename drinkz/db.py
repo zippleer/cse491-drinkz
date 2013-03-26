@@ -4,7 +4,6 @@ Database functionality for drinkz information.
 
 import string
 import drinkz.recipes
-import convert_to_ml
 
 # private singleton variables at module level
 _bottle_types_db = set()
@@ -17,6 +16,35 @@ def _reset_db():
     _bottle_types_db = set()
     _inventory_db = dict()
     _recipe_db = dict()
+
+def convert_to_ml(amount):
+        
+		volume,unit = amount.split(" ")
+		unit = unit.lower()
+		total = 0
+        
+		if unit == "oz":
+			total += float(volume)*29.5735
+            
+		elif unit == "ml":
+			total += float(volume)
+            
+		elif unit == "liter":
+			total += float(volume)*1000.0
+
+		elif unit == "liters":
+			total += float(volume)*1000.0
+            
+		elif unit == "gallon":
+			total += float(volume)*3785.41178
+
+		elif unit == "gallons":
+			total += float(volume)*3785.41178
+
+		else:
+			raise Exception('Unknown unit %s' % measurement)
+            
+		return total
 
 # exceptions in Python inherit from Exception and generally don't need to
 # override any methods.
@@ -57,39 +85,14 @@ def add_to_inventory(mfg, liquor, amount):
         err = "Missing liquor: manufacturer '%s', name '%s'" % (mfg, liquor)
         raise LiquorMissing(err)
 
-    if (mfg, liquor) in _inventory_db:
-        curr_amount = _inventory_db[(mfg, liquor)]
-        total_amount = add_amounts(curr_amount, amount)
-        _inventory_db[(mfg, liquor)] = total_amount
-        
+	if (mfg, liquor) in _inventory_db:
+		curr_amount = _inventory_db[(mfg, liquor)]
+		total_amount = add_amounts(curr_amount, amount)
+		_inventory_db[(mfg, liquor)] = total_amount
+
 	else:
-		volume = convert_to_ml(amount)
-        _inventory_db[(mfg, liquor)] = volume
-
-
-def convert_to_ml(self,amount):
-        
-        volume,unit = amount.split(" ")
-        unit = unit.lower()
-        total = 0
-        
-        if unit == "oz":
-            total += float(volume)*29.5735
-            
-        elif unit == "ml":
-            total += float(volume)
-            
-        elif unit == "liter" or unit == 'liters':
-            total += float(volume)*1000.0
-            
-        elif unit == "gallon" or unit =='gallons':
-            total += float(volume)*3785.41178
-
-		else:
-            raise Exception('Unknown unit %s' % measurement)
-            
-        return total
-        
+		volume = db.convert_to_ml(amount)
+		_inventory_db[(mfg, liquor)] = volume
         
 
 def check_inventory(mfg, liquor):
@@ -121,13 +124,13 @@ def get_liquor_inventory():
         yield key
         
 def add_amounts(value, str2): 
-    total = 0.0
-    total += value
+	total = 0.0
+	total += value
     
 	new_val = convert_to_ml(str2)
 	total += new_val
     
-    return total
+	return total
 
 def check_inventory_for_type(typ):
     type_list = list()
