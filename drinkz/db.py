@@ -4,6 +4,7 @@ Database functionality for drinkz information.
 
 import string
 import drinkz.recipes
+import convert_to_ml
 
 # private singleton variables at module level
 _bottle_types_db = set()
@@ -61,35 +62,34 @@ def add_to_inventory(mfg, liquor, amount):
         total_amount = add_amounts(curr_amount, amount)
         _inventory_db[(mfg, liquor)] = total_amount
         
-    else:
-        x = 'ml'
-        o = 'oz'
-        g = 'gallon'
-        gs = 'gallons'
-        l = 'liter'
-        ls= 'liters'
+	else:
+		volume = convert_to_ml(amount)
+        _inventory_db[(mfg, liquor)] = volume
+
+
+def convert_to_ml(self,amount):
         
-        volume, measurement = amount.split()
-        volume = float(volume)
-        measurement = measurement.lower()
-            
-        if measurement == x:
-            _inventory_db[(mfg, liquor)] = volume
-            
-        elif measurement == o:
-            vc = volume * 29.5735
-            _inventory_db[(mfg, liquor)] = vc
-            
-        elif measurement == g or measurement == gs:
-            vg = volume * 3785.41
-            _inventory_db[(mfg, liquor)] = vg
-            
-        elif measurement == l or measurement == ls:
-            vl = volume * 1000.00
-            _inventory_db[(mfg, liquor)] = vl
+        volume,unit = amount.split(" ")
+        unit = unit.lower()
+        total = 0
         
-        else:
+        if unit == "oz":
+            total += float(volume)*29.5735
+            
+        elif unit == "ml":
+            total += float(volume)
+            
+        elif unit == "liter" or unit == 'liters':
+            total += float(volume)*1000.0
+            
+        elif unit == "gallon" or unit =='gallons':
+            total += float(volume)*3785.41178
+
+		else:
             raise Exception('Unknown unit %s' % measurement)
+            
+        return total
+        
         
 
 def check_inventory(mfg, liquor):
@@ -122,38 +122,10 @@ def get_liquor_inventory():
         
 def add_amounts(value, str2): 
     total = 0.0
-    
-    x = 'ml'
-    o = 'oz'
-    g = 'gallon'
-    gs = 'gallons'
-    l = "liter"
-    ls ='liters'
-    
-    curr_volume, curr_measurement = str2.split()
-    curr_volume = float(curr_volume)
-    curr_measurement = curr_measurement.lower()
-    
     total += value
     
-    if curr_measurement == x:
-        total += curr_volume
-        
-    elif curr_measurement == o:
-        v2 = curr_volume * 29.5735
-        total += v2
-        
-    elif curr_measurement == g or curr_measurement == gs:
-        vg2 = curr_volume * 3785.41
-        total += vg2
-        
-    elif curr_measurement == l or curr_measurement == ls:
-        vl = curr_volume * 1000.00
-        total += vl    
-        
-    else:
-        raise Exception('Unknown unit %s' % curr_measurement)
-    
+	new_val = convert_to_ml(str2)
+	total += new_val
     
     return total
 

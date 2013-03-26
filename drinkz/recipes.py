@@ -21,32 +21,13 @@ class Recipe(object):
                 if amount>banked:
                     banked = amount
                     
-            how_short = banked - self.convert_to_ml(curr_item[1])
+            how_short = banked - db.convert_to_ml(curr_item[1])
             
             if ( how_short < 0 ):
                 supply_list.append((curr_item[0],how_short*-1.))
                 
         return supply_list
                     
-    def convert_to_ml(self,amount):
-        
-        volume,unit = amount.split(" ")
-        unit = unit.lower()
-        total = 0
-        
-        if unit == "oz":
-            total += float(volume)*29.5735
-            
-        elif unit == "ml":
-            total += float(volume)
-            
-        elif unit == "liter":
-            total += float(volume)*1000.0
-            
-        elif unit == "gallon":
-            total += float(volume)*3785.41178
-            
-        return total
         
     def __str__(self):
         r_string = self.name + ': '
