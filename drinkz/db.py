@@ -2,6 +2,7 @@
 Database functionality for drinkz information.
 """
 
+from cPickle import dump, load
 
 
 # private singleton variables at module level
@@ -132,5 +133,24 @@ def check_inventory_for_type(typ):
             type_list.append((m,l, amount))
             
     return type_list
+
+
+def save_db(filename):
+	fp =open(filename, 'wb')
+
+	saveit = (_bottle_types_db, _inventory_db, _recipe_db)
+	dump(saveit, fp)
+
+	fp.close()
+
+def load_db(filename):
+global _bottle_types_db, _inventory_db, _recipe_db
+	fp =open(filename, 'rb')
+
+	loader = load(fp)
+
+	(_bottle_types_db, _inventory_db, _recipe_db) = loader
+
+	fp.close()
     
 
