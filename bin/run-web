@@ -2,16 +2,19 @@ import sys
 import _mypath
 import drinkz.app
 from wsgiref.simple_server import make_server
-import urlparse
-import simplejson
+from drinkz import app
 import os
 
 
-if __name__ == '__main__':
+def main(args):
+	os.chdir('..')
+
+	make_html.main()
+
 	import random, socket
 	port = random.randint(8000,9999)
 
-	app = drinkz.app.SimpleApp()
+	app = app.SimpleApp()
 
 	httpd = make_server('', port, app)
 
@@ -21,3 +24,6 @@ if __name__ == '__main__':
 		(socket.getfqdn(), port)
 
 	httpd.serve_forever()
+
+if __name__ == '__main__':
+	main(sys.argv)

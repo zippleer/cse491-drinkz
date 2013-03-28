@@ -2,15 +2,18 @@
 from wsgiref.simple_server import make_server
 import urlparse
 import simplejson
+import db
 
 
 dispatch = {
-    '/' : 'index',
-    '/content' : 'somefile',
-    '/error' : 'error',
-    '/form' : 'form',
-    '/recv' : 'recv',
-    '/rpc'  : 'dispatch_rpc'
+	'/' : 'index',
+	'/liquor_type' : 'show_types',
+ 	'/inventory' : 'show_inv',
+	'/recipies' : 'show_rec',
+	'/conversion' : 'conversion_form',
+	'/converted' : 'convert_result',
+	'/recv' : 'recv',
+	 
 }
 
 
@@ -39,37 +42,31 @@ class SimpleApp(object):
         return fn(environ, start_response)
             
     def index(self, environ, start_response):
-        data = """\
-Visit:
-<a href='content'>a file</a>,
-<a href='error'>an error</a>,
-<a href='somethingelse'>something else</a>, or
-<a href='form'>a form...</a>
-<p>
-"""
+        data = open('index.html').read()
         start_response('200 OK', list(html_headers))
         return [data]
         
-    def somefile(self, environ, start_response):
+    def show_types(self, environ, start_response):
         content_type = 'text/html'
-        data = open('somefile.html').read()
+        data = open('html/liquor_types.html').read()
 
 
         start_response('200 OK', list(html_headers))
         return [data]
-
-
-    def error(self, environ, start_response):
-        status = "404 Not Found"
+ 
+    def show_inv(self, environ, start_response):
         content_type = 'text/html'
-        data = "Couldn't find your stuff."
-       
+        data = open(html/inventory.html)
+
         start_response('200 OK', list(html_headers))
         return [data]
 
-        start_response('200 OK', [('Content-type', content_type)])
-        return [data]
+    def show_rec(self,environ, start_response):
+        content_type = 'text/html'
+        data = open(html/recipes.html)
 
+        start_response('200 OK', list(html_headers))
+        return [data]
 
     def form(self, environ, start_response):
         data = form()
@@ -83,12 +80,12 @@ Visit:
         results = urlparse.parse_qs(formdata)
 
 
-        firstname = results['firstname'][0]
-        lastname = results['lastname'][0]
+        amount = results['amount'][0]
+        amount = db.convert_to_ml(amount)
 
 
         content_type = 'text/html'
-        data = "First name: %s; last name: %s.  <a href='./'>return to index</a>" % (firstname, lastname)
+        data = "Amount %s ml;  <a href='./'>return to index</a>" % (amount)
 
 
         start_response('200 OK', list(html_headers))
@@ -152,8 +149,7 @@ Visit:
 def form():
     return """
 <form action='recv'>
-Your first name? <input type='text' name='firstname' size'20'>
-Your last name? <input type='text' name='lastname' size='20'>
+<Amount in oz/gallon/liter/ml? <input type='text' name='amount' size'20'>
 <input type='submit'>
 </form>
 """
