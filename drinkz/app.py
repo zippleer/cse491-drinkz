@@ -12,8 +12,7 @@ dispatch = {
 	'/recipies' : 'show_rec',
 	'/conversion' : 'conversion_form',
 	'/converted' : 'convert_result',
-	'/recv' : 'recv',
-	 
+	'/recv' : 'recv'
 }
 
 

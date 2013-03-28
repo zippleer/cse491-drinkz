@@ -1,8 +1,12 @@
 #! /usr/bin/env python
 
 import os
+import sys
 from drinkz import db
 from drinkz import recipes
+
+
+db._reset_db()
 
 db.add_bottle_type('Johnnie Walker', 'black label', 'blended scotch')
 db.add_to_inventory('Johnnie Walker', 'black label', '500 ml')
@@ -54,7 +58,7 @@ print >>fp, "<b> I'm not slurring my words, I'm just talking in cursive officer!
 print >>fp, "<p><a href='recipes.html'>Recipes</a>"
 print >>fp, "<p><a href='inventory.html'>Inventory</a>"
 print >>fp, "<p><a href='liquor_types.html'>Liquors</a>"
-print >>fp, "<a href = 'conversion'>Convert-to-html<a/>"
+print >>fp, "<a href = 'conversion'>Convert-to-ml<a/>"
 fp.close()
 #
 
