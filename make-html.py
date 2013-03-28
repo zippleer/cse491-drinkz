@@ -41,13 +41,20 @@ db.add_recipe(r3)
 
 try:
     os.mkdir('html')
+
 except OSError:
     # already exists
     pass
 
 # index
 fp = open('html/index.html', 'w')
-print >>fp, "<p><a href='recipes.html'>Recipes</a><p><a href='inventory.html'>Inventory</a><p><a href='liquor_types.html'>Liquors</a>"
+
+print >>fp, "<b> I'm not slurring my words, I'm just talking in cursive officer!!!</b>"
+
+print >>fp, "<p><a href='recipes.html'>Recipes</a>"
+print >>fp, "<p><a href='inventory.html'>Inventory</a>"
+print >>fp, "<p><a href='liquor_types.html'>Liquors</a>"
+print >>fp, "<a href = 'form'>Convert-to-html<a/>"
 fp.close()
 #
 

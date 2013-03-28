@@ -18,11 +18,14 @@ def data_reader(fp):
     reader = csv.reader(fp)
     
     for line in reader:
-        if not line or not line[0].strip() or line[0].startswith('#'):
+        if not line or not line[0].strip() or line[0].startswith('#') or len(line) != 3:
             continue
-        
+
         (mfg, name, typ) = line
-        yield line
+
+        yield line        
+        
+ 
 
 def load_bottle_types(fp):
     """
@@ -39,15 +42,14 @@ def load_bottle_types(fp):
     x = []
     n = 0
     
-    for line in new_reader:
+    for (mfg, name, typ) in new_reader:
         try:
-            (mfg, name, typ) = line
+            db.add_bottle_type(mfg, name, typ)
+            n+=1
+
         except ValueError:
-            print 'failed to add to inv'
+            print 'failed to add to inv', mfg, name, typ
             continue
-        
-        n += 1
-        db.add_bottle_type(mfg, name, typ)
         
     return n
    
@@ -70,15 +72,14 @@ def load_inventory(fp):
     x = []
     n = 0
     
-    for line in new_reader:
+    for (mfg, name, typ) in new_reader:
         try:
-            (mfg, name, amount) = line
-            n += 1
+            db.add_to_inventory(mfg, name, typ)            
+            n+=1
+
         except ValueError:
-            print 'failed to add to inv'
+            print 'failed to add to inv', mfg, name, typ
             continue
         
-        n += 1
-        db.add_to_inventory(mfg, name, amount)
 
     return n

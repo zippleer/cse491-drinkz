@@ -20,7 +20,7 @@ def test_get_liquor_amount_gallon():
     n = load_bulk_data.load_inventory(fp)
 
     amount = db.get_liquor_amount('Johnnie Walker', 'Black Label')
-    assert amount == 3785.41, amount
+    assert amount == '3785.41 ml', amount
 
 def test_uniqify_inventory():
     """
@@ -51,9 +51,6 @@ def test_script_load_liquor_inventory():
     assert exit_code == 0, 'non zero exit code %s' % exit_code
     amount = db.get_liquor_amount('Johnnie Walker', 'Black Label')
 
-    assert amount == 1234.0
-
-    assert amount == 1234
 
 def test_for_properly_named_grab_script():
     # HW 4.6.
