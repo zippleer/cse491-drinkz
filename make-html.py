@@ -55,10 +55,10 @@ fp = open('html/index.html', 'w')
 
 print >>fp, "<b> I'm not slurring my words, I'm just talking in cursive officer!!!</b>"
 
-print >>fp, "<p><a href='recipes.html'>Recipes</a>"
-print >>fp, "<p><a href='inventory.html'>Inventory</a>"
-print >>fp, "<p><a href='liquor_types.html'>Liquors</a>"
-print >>fp, "<a href = 'conversion'>Convert-to-ml<a/>"
+print >>fp, "<p><a href='recipes.html'>Recipes</a></p>"
+print >>fp, "<p><a href='inventory.html'>Inventory</a></p>"
+print >>fp, "<p><a href='liquor_types.html'>Liquors</a></p>"
+print >>fp, "<a href = 'conversion'>Convert-to-ml<a/></p>"
 fp.close()
 #
 
@@ -66,6 +66,13 @@ fp.close()
 recipes = db.get_all_recipes()
 
 fp2 = open('html/recipes.html', 'w')
+print >>fp2, """
+<p><a href='index.html'>Index</a></p>
+<p>Recipes</p>
+<p><a href='inventory.html'>Inventory</a></p>
+<p><a href='liquor_types.html'>Liquor Types</a></p>
+<p>Recipes: </p>"""
+
 
 r_string = "<b>Recipes</b>\n\n<ul>"
 
