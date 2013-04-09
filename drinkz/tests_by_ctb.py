@@ -20,7 +20,7 @@ def test_get_liquor_amount_gallon():
     n = load_bulk_data.load_inventory(fp)
 
     amount = db.get_liquor_amount('Johnnie Walker', 'Black Label')
-    assert amount == '3785.41 ml', amount
+    assert amount == 3785.41, amount
 
 def test_uniqify_inventory():
     """

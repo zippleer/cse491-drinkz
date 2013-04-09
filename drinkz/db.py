@@ -4,22 +4,45 @@ Database functionality for drinkz information.
 
 from cPickle import dump, load
 
+import os
+
+import recipes
+
 
 # private singleton variables at module level
-_bottle_types_db = set()
+_bottle_types_db = set(tuple())
 _inventory_db = {}
 _recipe_db = {}
 
 def _reset_db():
     "A method only to be used during testing -- toss the existing db info."
     global _bottle_types_db, _inventory_db, _recipe_db
-    _bottle_types_db = set()
+    _bottle_types_db = set(tuple())
     _inventory_db = {}
     _recipe_db = {}
 
+
+def save_db(filename):
+	fp =open(filename, 'wb')
+
+	saveit = (_bottle_types_db, _inventory_db, _recipe_db)
+	dump(saveit, fp)
+
+	fp.close()
+
+def load_db(filename):
+	global _bottle_types_db, _inventory_db, _recipe_db
+	fp =open(filename, 'rb')
+
+	loader = load(fp)
+
+	(_bottle_types_db, _inventory_db, _recipe_db) = loader
+
+	fp.close()
+
 def convert_to_ml(amount):
         
-		volume,unit = amount.split(" ")
+		volume,unit = amount.split()
 		unit = unit.lower()
 		volume = float(volume)
         
@@ -54,15 +77,24 @@ class LiquorMissing(Exception):
 class DuplicateRecipeName(Exception):
     pass
 
+# Input r: recipe object
+# Output: False if a recipe with the same name exists
+#         True otherwise
 def add_recipe(r):  
-    _recipe_db[r.name] = r
-        
-        
-def get_recipe(name):
-    if name in _recipe_db:
-        return _recipe_db[name]
+    if r.name not in _recipe_db:
+        _recipe_db[r.name]=r
     else:
-        return 0
+        raise DuplicateRecipeName()
+
+
+def get_recipe(name):
+    if name not in _recipe_db:
+	    return None
+    return _recipe_db[name]        
+
+
+def get_all_recipe_names():
+    return _recipe_db.keys()
     
 
 def get_all_recipes():
@@ -87,32 +119,40 @@ def add_to_inventory(mfg, liquor, amount):
         raise LiquorMissing(err) 
 
     if (mfg, liquor) in _inventory_db:
-        _inventory_db[(mfg, liquor)].append(amount)
+        curr_amount = convert_to_ml(amount)
+        prev_amount = get_liquor_amount(mfg, liquor)
+        new_amount = float(curr_amount) + float(prev_amount)
+        _inventory_db[(mfg, liquor)] = str(new_amount) + ' ml'
     else:
-        _inventory_db[(mfg, liquor)] = []
-        _inventory_db[(mfg, liquor)].append(amount)
+        _inventory_db[(mfg, liquor)] = amount
     
 
 def check_inventory(mfg, liquor):
+    for key in _inventory_db:
+        if mfg == key[0] and liquor == key[1]:
+            return True
         
-    return ((mfg, liquor) in _inventory_db)
+    return False
+
 
 def get_liquor_amount(mfg, liquor):
     "Retrieve the total amount of any given liquor currently in inventory."
-    added = _inventory_db[(mfg, liquor)]
-    volume = 0.0
+    amounts = []
+    for key in _inventory_db:
+        if mfg == key[0] and liquor == key[1]:
+           amounts.append(_inventory_db[key])
+            
+    total_ml = 0.0
 
-    for value in added:
-        value = convert_to_ml(value)
-        volume += value
+    for i in amounts:
+        total_ml += float(convert_to_ml(i))    
 
-    return str(volume) + ' ml'
-
+    return total_ml 
 
 def get_liquor_inventory():
     "Retrieve all liquor types in inventory, in tuple form: (mfg, liquor)."
-    for m, l in _inventory_db:
-        yield m, l
+    for key in _inventory_db:
+        yield key[0], key[1]
         
 def add_amounts(value, str2): 
 	total = 0.0
@@ -135,22 +175,5 @@ def check_inventory_for_type(typ):
     return type_list
 
 
-def save_db(filename):
-	fp =open(filename, 'wb')
-
-	saveit = (_bottle_types_db, _inventory_db, _recipe_db)
-	dump(saveit, fp)
-
-	fp.close()
-
-def load_db(filename):
-	global _bottle_types_db, _inventory_db, _recipe_db
-	fp =open(filename, 'rb')
-
-	loader = load(fp)
-
-	(_bottle_types_db, _inventory_db, _recipe_db) = loader
-
-	fp.close()
     
 
