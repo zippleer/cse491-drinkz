@@ -156,9 +156,9 @@ class SimpleApp(object):
             
             missing = recipe.need_ingredients()
             if(missing):
-                data = data + "Hell Nah"
+                data = data + "Hell Yeah, We Can Do That!"
             else:
-                data = data + "Hell Yeah!"
+                data = data + "Hell Nah, Go Buy More Booze!"
             
             print data + "</td></tr>"
         data = data + "</table>"
@@ -188,7 +188,7 @@ class SimpleApp(object):
         <tr><th>Manfacturer</th><th>Liquor</th><th>Amount</th></tr>
         """
         for mfg,liquor in db.get_liquor_inventory():
-            data = data + "<tr><td> "+ mfg +" </td><td> "+liquor+" </td><td> "+str(db.get_liquor_amount(mfg,liquor))+" </td></tr>"
+            data = data + "<tr><td> "+ mfg +" </td><td> "+liquor+" </td><td> "+str(db.get_liquor_amount(mfg,liquor)) + " ml"+" </td></tr>"
         data = data + "</table>"
         
         data = data + """</br>
