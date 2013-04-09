@@ -19,10 +19,16 @@ def main(args):
     db.add_bottle_type('Rossi', 'extra dry vermouth', 'vermouth')
     db.add_to_inventory('Rossi', 'extra dry vermouth', '24 oz')
 
-	r = recipes.Recipe('scotch on the rocks', [('blended scotch',
-                                                   '4 oz')])
+    r = drinkz.recipes.Recipe('scotch on the rocks', [('blended scotch', '4 oz')])
+    db.add_recipe(r)
 
-	db.add_recipe(r)
+    r2 = drinkz.recipes.Recipe('vomit inducing martini', [('orange juice', '6 oz'), ('vermouth', '1.5 oz')])
+    db.add_recipe(r2)
+
+    r3 = drinkz.recipes.Recipe('whiskey bath', [('blended scotch', '6 liter')])
+    db.add_recipe(r3)
+    
+    filename = args[1]
 
 	db.save_db(filename)
 

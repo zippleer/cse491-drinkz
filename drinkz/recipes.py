@@ -3,9 +3,9 @@
 import db
 
 class Recipe(object):  
-	def __init__(self, name, ingredients):
-		self.name = name
-		self.ingredients = ingredients
+	def __init__(self, n = '', i =[]):
+		self.name = n
+		self.ingredients = i
         
 #	def need_ingredients(self):
 #		needed = []
@@ -76,9 +76,6 @@ class Recipe(object):
 
 
         #print amounts_list, "amounts_list"
-            
-        
-        #=========================================================================
 
         # CREATE THE MISSING LIST=================================================
 

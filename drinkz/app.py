@@ -53,7 +53,7 @@ class SimpleApp(object):
         
         page = page + """
                         <style type=\"text/css\">
-                        h1 {color:red;}
+                        h1 {color:black;}
                         p {color:blue;}
                         </style>
                         </head>
@@ -296,7 +296,7 @@ Amount in oz/gallon/liter/ml? <input type='text' name='amount' size'20'>
         return str(db.convert_to_ml(amount))+" ml"
         
     def rpc_get_recipe_names(self):
-        return str(db.get_all_recipes_names())
+        return str(db.get_all_recipe_names())
 
     def rpc_get_liquor_inventory(self):
         inventories = db.get_liquor_inventory()

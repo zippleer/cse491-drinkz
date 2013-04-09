@@ -40,7 +40,7 @@ class TestBasicRecipeStuff(unittest.TestCase):
         r2 = recipes.Recipe('scotch on the rocks', [('vodka', '4 oz')])
         try:
             db.add_recipe(r2)
-
+            assert 0
         except db.DuplicateRecipeName:
             pass                        # success, we got an exception
 

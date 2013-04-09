@@ -5,6 +5,8 @@ import recipes
 
 def test_app_recipes():
 
+    db._reset_db()
+
     r = recipes.Recipe('scotch on the rocks', [('blended scotch', '4 oz')])
     db.add_recipe(r)
 
