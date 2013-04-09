@@ -70,9 +70,7 @@ class SimpleApp(object):
 
     def index(self, environ, start_response):
         
-        data = """
-                <input type=\"button\" onclick=\"PRESS_ME()\" value=\"PRESS ME!!\" />"""
-        data = data + """</br>
+        data = """</br>
     </br>
     <h3> Menu </h3>
     <a href='/'>Home</a></br>
@@ -81,6 +79,9 @@ class SimpleApp(object):
     <a href='liquor_types'>Liquor Types</a></br>
     <a href='convert_to_ml'>Convert amount</a></br>
     """
+
+        data = data +"""
+                <input type=\"button\" onclick=\"PRESS_ME()\" value=\"PRESS ME!!\" />"""
         script = """
                 <script>
                 function PRESS_ME()
@@ -89,7 +90,7 @@ class SimpleApp(object):
                 }
                 </script>
              """
-        data = self.buildHtmlPage("Main Page",script,data)
+        data = self.buildHtmlPage("Grab Them Solo Cups and Lesgo!",script,data)
         start_response('200 OK', list(html_headers))
         return [data]
 
@@ -142,7 +143,7 @@ class SimpleApp(object):
         data = """
 
         <table border=\"1\" cellpadding =\"5\">
-        <tr><th>Name</th><th>Ingredients</th><th>Are we missing anything?</tr>
+        <tr><th>Name</th><th>Ingredients</th><th>Check Those Ingredients!</tr>
         """
         for recipe in db.get_all_recipes():
             data = data + "<tr><td> "+ recipe.name +"</td><td><table cellpadding =\"5\">"
