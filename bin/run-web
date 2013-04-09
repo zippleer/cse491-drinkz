@@ -1,24 +1,20 @@
-import sys
 import _mypath
 from wsgiref.simple_server import make_server
+import urlparse
+import simplejson
+import sys
 
 from drinkz import db,recipes
+
 from drinkz.app import SimpleApp
-import os
 
+import random, socket
+port = random.randint(8000, 9999)
 
-def main(args):
-
-	import random, socket
-	port = random.randint(8000, 9999)
-
-	app = SimpleApp()
-	app.load_db_file("db.txt")
-	httpd = make_server('', port, app)
-	print "Serving on port %d..." % port
-	print "Try using a Web browser to go to http://%s:%d/" % \
+app = SimpleApp()
+app.load_db_file("test_database")
+httpd = make_server('', port, app)
+print "Serving on port %d..." % port
+print "Try using a Web browser to go to http://%s:%d/" % \
 	  (socket.getfqdn(), port)
-	httpd.serve_forever()
-
-if __name__ == '__main__':
-	main(sys.argv)
+httpd.serve_forever()

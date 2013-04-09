@@ -15,6 +15,9 @@ dispatch = {
     '/rpc'  : 'dispatch_rpc'
 }
 
+def load_db_file(self, file_name):
+        db.load_db(file_name)
+
 
 html_headers = [('Content-type', 'text/html')]
 
@@ -104,8 +107,8 @@ class SimpleApp(object):
         <table border=\"1\" cellpadding =\"5\">
         <tr><th>Manfacturer</th><th>Liquor</th><th>Type</th></tr>
         """
-        for mfg, liq in db.get_liquor_inventory():
-            data = data + "<tr><td> %s </td><td> %s </td><td> %s </td></tr>" % mfg, liq
+        for mfg, liq, typ in db._bottle_types_db:
+            data = data + "<tr><td>"+mfg+"</td><td>"+liq+ "</td><td>"+typ+ "</td><td>"
         
         data = data + "</table>"
         
@@ -153,9 +156,9 @@ class SimpleApp(object):
             
             missing = recipe.need_ingredients()
             if(missing):
-                data = data + "we're missing some stuff, call Mikey"
+                data = data + "Hell Nah"
             else:
-                data = data + "nope, we're good to go, call Mikey"
+                data = data + "Hell Yeah!"
             
             print data + "</td></tr>"
         data = data + "</table>"
@@ -184,8 +187,8 @@ class SimpleApp(object):
         <table border=\"1\" cellpadding =\"5\">
         <tr><th>Manfacturer</th><th>Liquor</th><th>Amount</th></tr>
         """
-        for item in db.get_liquor_inventory():
-            data = data + "<tr><td> "+ item[0] +" </td><td> "+item[1]+" </td><td> "+db.get_liquor_amount(mfg,liquor)+" </td></tr>"
+        for mfg,liquor in db.get_liquor_inventory():
+            data = data + "<tr><td> "+ mfg +" </td><td> "+liquor+" </td><td> "+str(db.get_liquor_amount(mfg,liquor))+" </td></tr>"
         data = data + "</table>"
         
         data = data + """</br>
