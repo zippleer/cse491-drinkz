@@ -512,8 +512,8 @@ Amount in oz/gallon/liter/ml? <input type='text' name='amount' size'20'>
     def rpc_add_bottle_type(self, mfg, liquor, typ):
         db.add_bottle_type(mfg, liquor, typ)
 
-    def rpc_add_to_inventory(self, mfg, liquor, amount):
-        db.add_to_inventory(mfg, liquor, amount)
+    def rpc_add_to_inventory(self, bottle):
+        db.add_to_inventory(bottle[0], bottle[1], bottle[2])
 
     def rpc_add_recipe(self, name, ingredients):
 

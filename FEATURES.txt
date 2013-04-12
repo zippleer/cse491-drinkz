@@ -1,0 +1,25 @@
+Feature: Cost
+
+User X wants to throw a party but can't afford everything he wants. He needs to create a wishlist for the party and invite attendees. The creator of this wishlist must grant accesss to the wishlist to other users, thus preventing troller donations. When other users donate funds or supplies the total funding goal reflects the action. User Y notices that there is a severe lack of item A on the wishlist and proposes that the item be added.
+
+---
+
+Users can go to the drinkz site and:
+
+- Create a party wishlist with the computed total cost
+--creator of the wishlist can approve users wishing to join
+--creator can invite others to the wishlist
+--users must apply and recieve approval to change the wishlist
+
+- View a party wishlist and donate towards the goal, updating the total cost
+
+- Promise to bring a drink item on the list, checkbox indicator with updated total cost
+
+Features:
+-New Wishlist page to search for a specific wishlist and display the items
+-Bulk loading of wishlists
+-Additional items added to list
+---Proposal items added to list, awaiting creator approval
+-Current computed cost
+-privileged access to the wishlist
+

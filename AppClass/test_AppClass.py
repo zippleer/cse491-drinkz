@@ -1,93 +1,77 @@
-import socket, sys, os
+import sys
+import socket
 
-if len(sys.argv) != 3:
-    print "Please enter the hostname, space, then a port"
-    exit(0)
- 
-def test_GET():
-    hostname = sys.argv[1]
-    port = sys.argv[2]
+def main(args):
+
+    address = args[1]
+    port = args[2]
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((hostname , int(port)))
 
-    #asking the server for the index page
+    s.connect((address, int(port)))
+
     s.send("GET / HTTP/1.0\r\n\r\n")
-    
-    reply = "" 
-    #grabs pieces until there is no more info to grab
+    text = ""
     while 1:
-        buf = s.recv(100)
+        buf = s.recv(1000)
         if not buf:
-            break 
-        reply += buf
+            break
+        text+=buf
 
-    assert reply.find("Hi there! This is my app"), t
-    print "GET test: pass"
-    sys.stdout.flush()
     s.close()
 
-def test_Form():
-    hostname = sys.argv[1]
-    port = sys.argv[2]
+    assert text.find("<a href='somethingelse'>something else</a>, or") != -1, text
+    print "Get Test: Pass"
+
+def form(args):
+
+    address = args[1]
+    port = args[2]
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((hostname , int(port)))
 
-    #asking the server for the index page
-    s.send("GET /recv?in=good HTTP/1.0\r\n\r\n")
+    s.connect((address, int(port)))
 
-    reply = "" 
-    #grabs pieces until there is no more info to grab
+    s.send("GET /recv?add=4&to=6 HTTP/1.0\r\n\r\n")
+    text = ""
     while 1:
-        buf = s.recv(100)
+        buf = s.recv(1000)
         if not buf:
-           break 
-        reply += buf
+            break
+        text+=buf
 
-    assert reply.find('good')
-    assert reply.find('form')
-    sys.stdout.flush()
-    print "Form test: pass"
     s.close()
 
-def test_PIC():
-    hostname = sys.argv[1]
-    port = sys.argv[2]
+    assert text.find("10") != -1, text
+    print "Form Test: Pass"
+
+def image(args):
+
+    address = args[1]
+    port = args[2]
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((hostname , int(port)))
 
-    #asking the server for the index page
-    s.send("GET /pic HTTP/1.0\r\n\r\n")
-    
-    reply = '' 
-    buf = ''
-    #grabs pieces until there is no more info to grab
-    while 1:
-        buf = s.recv(100)
-        if not buf:
-           break 
-        if '\r\n' in buf:
-            continue
-        else:
-            reply += buf
+    s.connect((address, int(port)))
+
+    s.send("GET /helmet HTTP/1.0\r\n\r\n")
+    fp = s.makefile("request_image")
+    for line in fp:
+        if "Content-Length: " in line:
+           length = int(line.strip("Content-Length: "))
+           break
         
-    pic = open('Spartan-hemlet-Black-150-pxls.gif','wb')
-    pic.write(reply)
-    size = pic.tell()
+    fp2 = open("Spartan-helmet-Black-150-pxls.gif","r")
+    text2 = ""
+    for line in fp2:
+        text2+=line
     
-    assert os.path.exists('Spartan-hemlet-Black-150-pxls.gif')
-
-    pic.close()
-
-    #Test see if a file exsists and how many bytes does it have
-    sys.stdout.flush()
-    print "Image retrieval: pass"
     s.close()
-
-
-if __name__ == "__main__":
-    test_GET()
-    test_PIC()
-    test_Form()
+    assert length == len(text2),length
+    print "Image Retrieval: Pass"
+   
+if __name__ == '__main__':
+    form(sys.argv)
+    image(sys.argv)
+    main(sys.argv)
+   

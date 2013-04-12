@@ -1,66 +1,153 @@
-import urlparse, simplejson
-from jinja2 import Environment  
-from urllib2 import urlopen
-from json import load
+from wsgiref.simple_server import make_server
+import urlparse
+import simplejson
 
+dispatch = {
+    '/' : 'index',
+    '/content' : 'somefile',
+    '/error' : 'error',
+    '/helmet' : 'helmet',
+    '/form' : 'form',
+    '/recv' : 'recv',
+    '/rpc'  : 'dispatch_rpc'
+}
 
-begining = """ \
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-        <title> %s </title>
-    </head>
-	<body>
-		<div class="container">
-            <h1 class="head">%s</h1>
-            <article>""" 
-end = """ 	</article>
-		</div>
-	</body>
-</html>"""
+html_headers = [('Content-type', 'text/html')]
 
 class AppClass(object):
     def __call__(self, environ, start_response):
-        status = '200 OK'
 
         path = environ['PATH_INFO']
-        data = ""
-        title = "Application"
-        content = " "
+        fn_name = dispatch.get(path, 'error')
 
-        if path == '/':
-            content_type = 'text/html'
-            title = "WSGI AppClass"
-            content = """<p>Application/Framework</p><br><a href='/form'> Input Form Data </a><br><a href='/pic'>Retrieve Picture</a><br>"""
+        # retrieve 'self.fn_name' where 'fn_name' is the
+        # value in the 'dispatch' dictionary corresponding to
+        # the 'path'.
+        fn = getattr(self, fn_name, None)
 
-            data = begining % (title,title) + content + end 
-        elif path == '/form':
-            content_type = 'text/html'
-            title = "form"
-            content = """
-            <form action='recv'>
-            Give me some input ffs!: <input type='text' size='30' name='in'> <input type='submit'></form>"""
+        if fn is None:
+            start_response("404 Not Found", html_headers)
+            return ["No path %s found" % path]
 
-            data = begining % (title,title) + content + end 
-        elif path == '/recv':
-            content_type = 'text/html'
-            title = 'form'
-            content= """User Input=%s"""
-            response = environ['QUERY_STRING']
-            results = urlparse.parse_qs(response)
-
-            resp = results['in']
+        return fn(environ, start_response)
             
-            data = begining % (title,title) + content%resp[0] + end 
-        elif path == '/pic':
-            content_type = 'image/gif'
-            data = open('Spartan-hemlet-Black-150-pxls.gif','rb').read()
-            
-        else:
-            content_type = 'text/plain'
-            data = 'Path Request %s' % environ['PATH_INFO']
-        headers = [('Content-type', content_type)]
-        start_response('200 OK', headers)
-
+    def index(self, environ, start_response):
+        data = """\
+Visit:
+<a href='content'>a file</a>,
+<a href='error'>an error</a>,
+<a href='helmet'>an image</a>,
+<a href='somethingelse'>something else</a>, or
+<a href='form'>a form...</a>
+<p>
+<img src='/helmet'>
+"""
+        start_response('200 OK', list(html_headers))
         return [data]
+        
+    def somefile(self, environ, start_response):
+        content_type = 'text/html'
+        data = open('somefile.html').read()
+
+        start_response('200 OK', list(html_headers))
+        return [data]
+
+    def error(self, environ, start_response):
+        status = "404 Not Found"
+        content_type = 'text/html'
+        data = "Couldn't find your stuff."
+       
+        start_response('200 OK', list(html_headers))
+        return [data]
+
+    def helmet(self, environ, start_response):
+        content_type = 'image/gif'
+        data = open('Spartan-helmet-Black-150-pxls.gif', 'rb').read()
+
+        start_response('200 OK', [('Content-type', content_type)])
+        return [data]
+
+    def form(self, environ, start_response):
+        data = form()
+
+        start_response('200 OK', list(html_headers))
+        return [data]
+   
+    def recv(self, environ, start_response):
+        formdata = environ['QUERY_STRING']
+        results = urlparse.parse_qs(formdata)
+
+        add = results['add'][0]
+        add2 = results['to'][0]
+        equals = int(add)+int(add2)
+        content_type = 'text/html'
+        data = "%s + %s = %s" % (add,add2,str(equals))
+
+        start_response('200 OK', list(html_headers))
+        return [data]
+
+    def dispatch_rpc(self, environ, start_response):
+        # POST requests deliver input data via a file-like handle,
+        # with the size of the data specified by CONTENT_LENGTH;
+        # see the WSGI PEP.
+        
+        if environ['REQUEST_METHOD'].endswith('POST'):
+            body = None
+            if environ.get('CONTENT_LENGTH'):
+                length = int(environ['CONTENT_LENGTH'])
+                body = environ['wsgi.input'].read(length)
+                response = self._dispatch(body) + '\n'
+                start_response('200 OK', [('Content-Type', 'application/json')])
+
+                return [response]
+
+        # default to a non JSON-RPC error.
+        status = "404 Not Found"
+        content_type = 'text/html'
+        data = "Couldn't find your stuff."
+       
+        start_response('200 OK', list(html_headers))
+        return [data]
+
+    def _decode(self, json):
+        return simplejson.loads(json)
+
+    def _dispatch(self, json):
+        rpc_request = self._decode(json)
+
+        method = rpc_request['method']
+        params = rpc_request['params']
+        
+        rpc_fn_name = 'rpc_' + method
+        fn = getattr(self, rpc_fn_name)
+        result = fn(*params)
+        response = { 'result' : result, 'error' : None, 'id' : 1 }
+        response = simplejson.dumps(response)
+        return str(response)
+
+    def rpc_hello(self):
+        return 'world!'
+
+    def rpc_add(self, a, b):
+        return int(a) + int(b)
+    
+def form():
+    return """
+<form action='recv'>
+Add <input type='text' name='add' size'20'>
+To <input type='text' name='to' size='20'>
+<input type='submit'>
+</form>
+"""
+
+if __name__ == '__main__':
+    import random, socket
+    port = random.randint(8000, 9999)
+    
+    app = AppClass()
+    
+    httpd = make_server('', port, app)
+    print "Serving on port %d..." % port
+    print "Try using a Web browser to go to http://%s:%d/" % \
+          (socket.getfqdn(), port)
+    httpd.serve_forever()
