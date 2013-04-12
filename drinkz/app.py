@@ -85,13 +85,13 @@ class SimpleApp(object):
         
         data = """</br>
     </br>
-    <h2><> Menu </h2>
+    <h2> Menu </h2>
     <a href='/'>Home</a></br>
     <a href='recipes'>Recipes</a></br>
-    <a href='recipe_input'>Add Recipe</a></br>
     <a href='inventory'>Inventory</a></br>
     <a href='liquor_types'>Liquor Types</a></br>
     <a href='convert_to_ml'>Convert Amount</a></br>
+    <a href='recipe_input'>Add Recipe</a></br>
     <a href='type_form'>Add Bottle Type</a></br>
     <a href='inv_form'>Add to Inventory</a></br>
     """
@@ -127,15 +127,16 @@ class SimpleApp(object):
         
         data = data + """</br>
     </br>
-    <h3> Menu </h3>
+    <h2> Menu </h2>
     <a href='/'>Home</a></br>
     <a href='recipes'>Recipes</a></br>
-    <a href='recipe_input'>Add Recipe</a></br>
     <a href='inventory'>Inventory</a></br>
     <a href='liquor_types'>Liquor Types</a></br>
-    <a href='convert_to_ml'>Convert amount</a></br>
+    <a href='convert_to_ml'>Convert Amount</a></br>
+    <a href='recipe_input'>Add Recipe</a></br>
     <a href='type_form'>Add Bottle Type</a></br>
-    <a href='inv_form'>Add to Inventory</a></br>"""
+    <a href='inv_form'>Add to Inventory</a></br>
+    """
 
         data = self.buildHtmlPage("Liquor Types","",data)
         start_response('200 OK', [('Content-type', content_type)])
@@ -191,12 +192,13 @@ Liquor Amount:  <input type="text" name="liquor_amount"> <br>
         
         data = data + """</br>
     </br>
-    <h3> Menu </h3>
+    <h2> Menu </h2>
     <a href='/'>Home</a></br>
     <a href='recipes'>Recipes</a></br>
     <a href='inventory'>Inventory</a></br>
     <a href='liquor_types'>Liquor Types</a></br>
-    <a href='convert_to_ml'>Convert amount</a></br>
+    <a href='convert_to_ml'>Convert Amount</a></br>
+    <a href='recipe_input'>Add Recipe</a></br>
     <a href='type_form'>Add Bottle Type</a></br>
     <a href='inv_form'>Add to Inventory</a></br>
     """
@@ -232,12 +234,13 @@ Liquor Type:  <input type="text" name="liquor_type"> <br>
         
         data = data + """</br>
     </br>
-    <h3> Menu </h3>
+    <h2> Menu </h2>
     <a href='/'>Home</a></br>
     <a href='recipes'>Recipes</a></br>
     <a href='inventory'>Inventory</a></br>
     <a href='liquor_types'>Liquor Types</a></br>
-    <a href='convert_to_ml'>Convert amount</a></br>
+    <a href='convert_to_ml'>Convert Amount</a></br>
+    <a href='recipe_input'>Add Recipe</a></br>
     <a href='type_form'>Add Bottle Type</a></br>
     <a href='inv_form'>Add to Inventory</a></br>
     """
@@ -272,7 +275,7 @@ Liquor Type:  <input type="text" name="liquor_type"> <br>
      
         data = data + """</br>
     </br>
-    <h3> Menu </h3>
+    <h2> Menu </h2>
     <a href='/'>Home</a></br>
     <a href='recipes'>Recipes</a></br>
     <a href='inventory'>Inventory</a></br>
@@ -363,12 +366,13 @@ Amount of Alcohol? <input type='text' name='r_amount' size='20'> <br>
         
         data = data + """</br>
     </br>
-    <h3> Menu </h3>
+    <h2> Menu </h2>
     <a href='/'>Home</a></br>
     <a href='recipes'>Recipes</a></br>
     <a href='inventory'>Inventory</a></br>
     <a href='liquor_types'>Liquor Types</a></br>
-    <a href='convert_to_ml'>Convert amount</a></br>
+    <a href='convert_to_ml'>Convert Amount</a></br>
+    <a href='recipe_input'>Add Recipe</a></br>
     <a href='type_form'>Add Bottle Type</a></br>
     <a href='inv_form'>Add to Inventory</a></br>
     """
@@ -389,12 +393,13 @@ Amount of Alcohol? <input type='text' name='r_amount' size='20'> <br>
         
         data = data + """</br>
     </br>
-    <h3> Menu </h3>
+    <h2> Menu </h2>
     <a href='/'>Home</a></br>
     <a href='recipes'>Recipes</a></br>
     <a href='inventory'>Inventory</a></br>
     <a href='liquor_types'>Liquor Types</a></br>
-    <a href='convert_to_ml'>Convert amount</a></br>
+    <a href='convert_to_ml'>Convert Amount</a></br>
+    <a href='recipe_input'>Add Recipe</a></br>
     <a href='type_form'>Add Bottle Type</a></br>
     <a href='inv_form'>Add to Inventory</a></br>
     """
@@ -434,12 +439,13 @@ Amount in oz/gallon/liter/ml? <input type='text' name='amount' size'20'>
         
         data = data + """</br>
     </br>
-    <h3> Menu </h3>
+    <h2> Menu </h2>
     <a href='/'>Home</a></br>
     <a href='recipes'>Recipes</a></br>
     <a href='inventory'>Inventory</a></br>
     <a href='liquor_types'>Liquor Types</a></br>
-    <a href='convert_to_ml'>Convert amount</a></br>
+    <a href='convert_to_ml'>Convert Amount</a></br>
+    <a href='recipe_input'>Add Recipe</a></br>
     <a href='type_form'>Add Bottle Type</a></br>
     <a href='inv_form'>Add to Inventory</a></br>
     """
