@@ -163,6 +163,7 @@ def test_rpc_get_liquor_inventory():
     environ['CONTENT_LENGTH'] = len(s_input)
     
     d = {}
+
     def my_start_response(s, h, return_in=d):
         d['status'] = s
         d['headers'] = h
@@ -180,3 +181,37 @@ def test_rpc_get_liquor_inventory():
     
     assert ('Content-Type', 'application/json') in headers
     assert status == '200 OK'
+
+def test_json_add_bottle_type():
+    db._reset_db()
+    
+    call_remote(method='add_liquor_type', params = ['Jim Beam', 'Honey', 'whisky'], id='1')
+
+    assert db._check_bottle_type_exists('Jim Beam', 'Honey')==True
+    
+                
+                      
+def test_json_add_to_inventory():
+
+    db._reset_db()
+    db.add_bottle_type('Jim Beam', 'Honey', 'whisky')
+
+    call_remote(method='add_to_inventory', params = ['Jim Beam', 'Honey', '10 ml'], id='1')
+    
+    assert db.check_inventory('Jim Beam', 'Honey')==True
+    assert db.get_liquor_amount('Jim Beam', 'Honey')==10
+
+def test_json_add_recipe():
+
+    db._reset_db()
+
+    name = 'scotch on the rocks'
+    ing = [('blended scotch', '4 oz')]
+
+    call_remote(method='add_recipe', params = [name, ing], id='1')
+
+    print db.get_all_recipe_names()
+    
+    assert name in db.get_all_recipe_names()
+
+

@@ -1,0 +1,15 @@
+import socket#, _mypath
+from wsgiref.simple_server import make_server
+from app import AppClass
+import random
+
+if __name__ == '__main__':
+    port = random.randrange(8081, 9099) 
+
+    app = AppClass()
+
+    httpd = make_server('',port,app)
+    print "Serving on port %d....." % port
+    print "Try using a Web browser to go to http://%s:%d/" % \
+            (socket.getfqdn(), port)
+    httpd.serve_forever()

@@ -10,7 +10,7 @@ Module to load in bulk data from text files.
 
 import csv                              # Python csv package
 
-from . import db                        # import from local packag
+from . import db, recipes                        # import from local packag
 
 
 def data_reader(fp):
@@ -81,5 +81,54 @@ def load_inventory(fp):
             print 'failed to add to inv', mfg, name, typ
             continue
         
+
+    return n
+
+def recipe_reader(fp):
+
+    reader = csv.reader(fp)
+    for line in reader:
+        try:
+            if line[0].startswith('#'):
+                continue
+            if not line[0].strip():
+                continue
+
+        except IndexError:
+            pass
+
+        try:
+            recipe = line
+            print recipe
+        except ValueError:
+            continue
+        yield recipe 
+
+def load_recipes(fp):
+
+    new_reader = recipe_reader(fp)
+    
+    n = 0
+
+    while(1):
+        try:
+            for recipe in new_reader:
+                name = recipe[0]
+                
+                i = 1
+                ingredients = []
+                while(i<len(recipe)): 
+                    i_name = recipe[i]
+                    i_amount = recipe[i+1]
+                    ing = (i_name, i_amount)
+                    ingredients.append(ing)
+                    i+=2
+                r = recipes.Recipe(name, ingredients)
+                db.add_recipe(r)
+                n += 1
+                
+            new_reader.next()
+        except StopIteration:
+            break
 
     return n

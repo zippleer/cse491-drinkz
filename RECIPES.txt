@@ -1,0 +1,13 @@
+Bulk loading recipes
+
+<177 arctic:~/cse491-drinkz/bin >python load-liquor-recipes test_rec.txt
+
+The load-liqour-recipes function takes in a text file where each line represents a recipe.
+The recipes should be added as:
+RecipeName, Ingredient1, Amount1, ..., Ingredientx, Amountx
+
+The text files may look better as a name followed by an ingredient list but I got frustrated by stripping apart the parenthasis and brackets. Got a problem with that?
+
+My test_rec.txt
+Abe Lincoln, freedom, 1 oz,moonshine, 1 liter
+Adios Mother F*cker, tequila, 1 oz,vodka, 1 oz,rum, 1 oz,triple sec, 1 oz, sprite, 1 oz

@@ -1,0 +1,15 @@
+The WSGI application/framework app is located in the directory AppClass
+Run : python app.py within this directory to get the host and port
+then Run : python test_AppClass host port
+
+Terminal 1:
+<190 arctic:~/cse491-drinkz/AppClass >python run-web
+Serving on port 8185.....
+Try using a Web browser to go to http://arctic.cse.msu.edu:8185/
+
+Terminal 2:
+python test_AppClass.py arctic.cse.msu.edu 8185
+The straight up GET test: passed
+The image retrieval test: passed
+The form submission GET test: passed
+

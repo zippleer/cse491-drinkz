@@ -89,10 +89,10 @@ class Recipe(object):
 						amount = float(item[2])
 			ing_amount = db.convert_to_ml(i[1])#convert the ingredient to ml
             
-		if float(amount) < float(ing_amount):#compare the amount with ing
-			needed = float(ing_amount)-float(amount)
-			needed_tup = (i[0], needed)
-			missing_list.append(needed_tup)#add to missing list
+			if float(amount) < float(ing_amount):#compare the amount with ing
+				needed = float(ing_amount)-float(amount)
+				needed_tup = (i[0], needed)
+				missing_list.append(needed_tup)#add to missing list
 
 
 		return missing_list
