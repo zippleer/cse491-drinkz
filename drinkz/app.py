@@ -12,6 +12,8 @@ dispatch = {
     '/recipes' : 'recipes',
     '/liquor_types' : 'liquor_types',
     '/inventory' : 'inventory',
+    '/convert_form' : 'convert_form',
+    '/do_convert' : 'do_convert',
     '/rpc'  : 'dispatch_rpc'
 }
 
@@ -42,6 +44,9 @@ class SimpleApp(object):
 <a href='liquor_types'>Liquor types</a>
 <p>
 <a href='inventory'>Inventory</a>
+<p>
+<hr>
+<a href='convert_form'>Form to convert amounts</a>
 """]
 
     def recipes(self, environ, start_response):
@@ -71,6 +76,28 @@ class SimpleApp(object):
         for (mfg, liquor) in db.get_liquor_inventory():
             x.append("<li> %s - %s" % (mfg, liquor))
         x.append("</ul>")
+        return x
+
+    def convert_form(self, environ, start_response):
+        start_response("200 OK", list(html_headers))
+
+        return ["""\
+<form action='/do_convert'>
+Amount: <input type=text name=amount>
+<input type=submit>
+</form>
+"""]
+
+    def do_convert(self, environ, start_response):
+        start_response("200 OK", list(html_headers))
+
+        formdata = environ['QUERY_STRING']
+        results = urlparse.parse_qs(formdata)
+        
+        amount = results['amount'][0]
+        amount = db.convert_to_ml(amount)
+
+        x = ["Amount is: %s ml" % (amount,)]
         return x
 
     def dispatch_rpc(self, environ, start_response):
