@@ -174,21 +174,15 @@ Amount: <input type=text name=amount>
         response = simplejson.dumps(response)
         return str(response)
 
-    def rpc_hello(self):
-        return 'world!'
+    def rpc_convert_units_to_ml(self, amount):
+        return "%s ml" % (db.convert_to_ml(amount))
 
-    def rpc_add(self, a, b):
-        return int(a) + int(b)
+    def rpc_get_recipe_names(self):
+        return [ r.name for r in db.get_all_recipes() ]
+
+    def rpc_get_liquor_inventory(self):
+        return [ (mfg, liquor) for (mfg, liquor) in db.get_liquor_inventory() ]
     
-def form():
-    return """
-<form action='recv'>
-Your first name? <input type='text' name='firstname' size'20'>
-Your last name? <input type='text' name='lastname' size='20'>
-<input type='submit'>
-</form>
-"""
-
 if __name__ == '__main__':
     import random, socket
     port = random.randint(8000, 9999)
