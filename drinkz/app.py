@@ -3,13 +3,15 @@ from wsgiref.simple_server import make_server
 import urlparse
 import simplejson
 
+from drinkz import db
+
 dispatch = {
     '/' : 'index',
     '/content' : 'somefile',
     '/error' : 'error',
-    '/helmet' : 'helmet',
-    '/form' : 'form',
-    '/recv' : 'recv',
+    '/recipes' : 'recipes',
+    '/liquor_types' : 'liquor_types',
+    '/inventory' : 'inventory',
     '/rpc'  : 'dispatch_rpc'
 }
 
@@ -27,65 +29,49 @@ class SimpleApp(object):
         fn = getattr(self, fn_name, None)
 
         if fn is None:
-            start_response("404 Not Found", html_headers)
+            start_response("404 Not Found", list(html_headers))
             return ["No path %s found" % path]
 
         return fn(environ, start_response)
-            
+
     def index(self, environ, start_response):
-        data = """\
-Visit:
-<a href='content'>a file</a>,
-<a href='error'>an error</a>,
-<a href='helmet'>an image</a>,
-<a href='somethingelse'>something else</a>, or
-<a href='form'>a form...</a>
+        start_response("200 OK", list(html_headers))
+        return ["""\
+<A href='recipes'>Recipes</a>
 <p>
-<img src='/helmet'>
-"""
-        start_response('200 OK', list(html_headers))
-        return [data]
-        
-    def somefile(self, environ, start_response):
-        content_type = 'text/html'
-        data = open('somefile.html').read()
+<a href='liquor_types'>Liquor types</a>
+<p>
+<a href='inventory'>Inventory</a>
+"""]
 
-        start_response('200 OK', list(html_headers))
-        return [data]
+    def recipes(self, environ, start_response):
+        start_response("200 OK", list(html_headers))
+        x = ["Recipes:<p><ul>"]
 
-    def error(self, environ, start_response):
-        status = "404 Not Found"
-        content_type = 'text/html'
-        data = "Couldn't find your stuff."
-       
-        start_response('200 OK', list(html_headers))
-        return [data]
+        for r in db.get_all_recipes():
+            x.append("<li> Recipe name: %s" % r.name)
 
-    def helmet(self, environ, start_response):
-        content_type = 'image/gif'
-        data = open('Spartan-helmet-Black-150-pxls.gif', 'rb').read()
+        x.append("</ul>")
 
-        start_response('200 OK', [('Content-type', content_type)])
-        return [data]
+        return x
 
-    def form(self, environ, start_response):
-        data = form()
+    def liquor_types(self, environ, start_response):
+        start_response("200 OK", list(html_headers))
 
-        start_response('200 OK', list(html_headers))
-        return [data]
-   
-    def recv(self, environ, start_response):
-        formdata = environ['QUERY_STRING']
-        results = urlparse.parse_qs(formdata)
+        x = ["Liquor types:<p><ul>"]
+        for (mfg, liquor, typ) in db._bottle_types_db:
+            x.append("<li> %s - %s - %s" % (mfg, liquor, typ))
+        x.append("</ul>")
+        return x
 
-        firstname = results['firstname'][0]
-        lastname = results['lastname'][0]
+    def inventory(self, environ, start_response):
+        start_response("200 OK", list(html_headers))
+        x = ["Inventory:<p><ul>"]
 
-        content_type = 'text/html'
-        data = "First name: %s; last name: %s.  <a href='./'>return to index</a>" % (firstname, lastname)
-
-        start_response('200 OK', list(html_headers))
-        return [data]
+        for (mfg, liquor) in db.get_liquor_inventory():
+            x.append("<li> %s - %s" % (mfg, liquor))
+        x.append("</ul>")
+        return x
 
     def dispatch_rpc(self, environ, start_response):
         # POST requests deliver input data via a file-like handle,
