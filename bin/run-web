@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+import sys
 import _mypath                          # get path into drinkz/ dir.
 from drinkz.app import SimpleApp
 from drinkz import db
@@ -6,40 +7,12 @@ from drinkz import recipes
 from wsgiref.simple_server import make_server
 
 if __name__ == '__main__':
-    db.add_bottle_type('Johnnie Walker', 'black label', 'blended scotch')
-    db.add_to_inventory('Johnnie Walker', 'black label', '500 ml')
-
-    db.add_bottle_type('Uncle Herman\'s', 'moonshine', 'blended scotch')
-    db.add_to_inventory('Uncle Herman\'s', 'moonshine', '5 liter')
-    
-    db.add_bottle_type('Gray Goose', 'vodka', 'unflavored vodka')
-    db.add_to_inventory('Gray Goose', 'vodka', '1 liter')
-
-    db.add_bottle_type('Rossi', 'extra dry vermouth', 'vermouth')
-    db.add_to_inventory('Rossi', 'extra dry vermouth', '24 oz')
-
-    r = recipes.Recipe('scotch on the rocks', [('blended scotch', '4 oz')])
-    db.add_recipe(r)
-
-    r = recipes.Recipe('vodka martini', [('unflavored vodka', '6 oz'),
-                                        ('vermouth', '1.5 oz')])
-    db.add_recipe(r)
-
-    r = recipes.Recipe('vomit inducing martini', [('orange juice',
-                                                  '6 oz'),
-                                                 ('vermouth',
-                                                  '1.5 oz')])
-    db.add_recipe(r)
-
-    r = recipes.Recipe('whiskey bath', [('blended scotch', '2 liter')])
-    db.add_recipe(r)
-
-    r = recipes.Recipe('whiskey lake', [('blended scotch', '6 liter')])
-    db.add_recipe(r)
+    filename = sys.argv[1]
     
     import random, socket
     port = random.randint(8000, 9999)
-    
+
+    db.load_db(filename)
     app = SimpleApp()
 
     httpd = make_server('', port, app)
