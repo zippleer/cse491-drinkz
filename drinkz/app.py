@@ -19,6 +19,15 @@ dispatch = {
 
 html_headers = [('Content-type', 'text/html')]
 
+style = """
+<style type='text/css'>
+h1 {color:red;}
+body {
+font-size: 14px;
+}
+</style>
+"""
+
 class SimpleApp(object):
     def __call__(self, environ, start_response):
 
@@ -38,7 +47,12 @@ class SimpleApp(object):
 
     def index(self, environ, start_response):
         start_response("200 OK", list(html_headers))
+
+        
         return ["""\
+<html><head><title>Recipes</title></head>
+%s<body>
+<h1>Index</h1>
 <A href='recipes'>Recipes</a>
 <p>
 <a href='liquor_types'>Liquor types</a>
@@ -47,46 +61,66 @@ class SimpleApp(object):
 <p>
 <hr>
 <a href='convert_form'>Form to convert amounts</a>
-"""]
+<hr>
+
+<script>
+function myFunction()
+{
+alert("Hello! I am an alert box!");
+}
+</script>
+<input type="button" onclick="myFunction()" value="Show alert box" />
+</body>
+</html>
+""" % (style,)]
 
     def recipes(self, environ, start_response):
         start_response("200 OK", list(html_headers))
-        x = ["Recipes:<p><ul>"]
+        x = ["<html><head><title>Recipes</title>%s</head><body><h1>Recipes:</h1><p><ul>" % style]
 
         for r in db.get_all_recipes():
             x.append("<li> Recipe name: %s" % r.name)
 
-        x.append("</ul>")
+        x.append("</ul></body></html>")
 
         return x
 
     def liquor_types(self, environ, start_response):
         start_response("200 OK", list(html_headers))
 
-        x = ["Liquor types:<p><ul>"]
+        x = ["<html><head><title>Recipes</title>%s</head><body><h1>Liquor types</h1>:<p><ul>" % style]
         for (mfg, liquor, typ) in db._bottle_types_db:
             x.append("<li> %s - %s - %s" % (mfg, liquor, typ))
-        x.append("</ul>")
+        x.append("</ul></body></html>")
         return x
 
     def inventory(self, environ, start_response):
         start_response("200 OK", list(html_headers))
-        x = ["Inventory:<p><ul>"]
+        x = ["<html><head><title>Recipes</title>%s</head><body><h1>Inventory:</h1><p><ul>" % style]
 
         for (mfg, liquor) in db.get_liquor_inventory():
             x.append("<li> %s - %s" % (mfg, liquor))
-        x.append("</ul>")
+        x.append("</ul></body></html>")
         return x
 
     def convert_form(self, environ, start_response):
         start_response("200 OK", list(html_headers))
 
         return ["""\
+<html>
+<head>
+<title>Conversion form</title>
+%s
+</head>
+<body>
+<h1>Conversion form</h1>
 <form action='/do_convert'>
 Amount: <input type=text name=amount>
 <input type=submit>
 </form>
-"""]
+</body>
+</html>
+""" % style]
 
     def do_convert(self, environ, start_response):
         start_response("200 OK", list(html_headers))
