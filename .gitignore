@@ -1,2 +1,4 @@
 *.pyc
+bin/load-liquor-inventoryc
+bin/load-liquor-typesc
 *~
