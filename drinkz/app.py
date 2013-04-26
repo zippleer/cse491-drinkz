@@ -135,21 +135,9 @@ class SimpleApp(object):
     def convert_form(self, environ, start_response):
         start_response("200 OK", list(html_headers))
 
-        return ["""\
-<html>
-<head>
-<title>Conversion form</title>
-%s
-</head>
-<body>
-<h1>Conversion form</h1>
-<form action='/do_convert'>
-Amount: <input type=text name=amount>
-<input type=submit>
-</form>
-</body>
-</html>
-""" % style]
+        title = "convert form"
+        template = env.get_template("convert_form.html")
+        return str(template.render(locals()))
 
     def do_convert(self, environ, start_response):
         start_response("200 OK", list(html_headers))
