@@ -1,0 +1,7 @@
+See bin/load-recipes for script, and test-data/recipe-data-4.txt for an
+sample of the data file format; briefly:
+
+vomit inducing martini, orange juice, 6 oz
+vomit inducing martini, vermouth, 1.5 oz
+scotch on the rocks, blended scotch, 4 oz
+
