@@ -17,3 +17,5 @@ while "\r\n\r\n" not in buffer:
 s.close()
 
 print 'got buffer:', buffer
+# parsing the results for HW 5.4 is left as an exercise for the reader.
+# (see server.py for the basic logic.)
