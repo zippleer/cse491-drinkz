@@ -68,6 +68,40 @@ def load_inventory(fp):
 
     return n
 
+def load_recipes(fp):
+    import recipes
+    n = 0
+
+    this_recipe = ""
+    ingredients = []
+    for line in parse_csv(fp):
+        # take in multiple lines of NAME, INGREDIENT, AMOUNT
+        # where successive liens of NAME add INGREDIENT, AMOUNT to the recipe.
+        recipe_name, ingredient, amount = line
+        print recipe_name, ingredient, amount
+
+        # new recipe?
+        if this_recipe != recipe_name:
+            if this_recipe and ingredients:
+                print 'adding', this_recipe
+                r = recipes.Recipe(this_recipe, ingredients)
+                db.add_recipe(r)
+                n += 1
+
+            this_recipe = recipe_name
+            ingredients = [(ingredient, amount)]
+        else:
+            ingredients.append((ingredient, amount))
+            
+    # new recipe?
+    if this_recipe and ingredients:
+        print 'adding', this_recipe
+        r = recipes.Recipe(this_recipe, ingredients)
+        db.add_recipe(r)
+        n += 1
+
+    return n
+
 def parse_csv(fp):
     reader = csv.reader(fp)
 

@@ -3,7 +3,7 @@ Tests basic recipe API.
 """
 
 import unittest
-from . import db, recipes
+from . import db, recipes, load_bulk_data
 
 class TestBasicRecipeStuff(unittest.TestCase):
     def setUp(self):                    # This is run once per test, before.
@@ -186,3 +186,43 @@ class TestIngredients(object):
 
         r = db.get_recipe('vomit inducing martini')
         assert r not in x
+
+def test_bulk_load_1():
+    db._reset_db()
+
+    n = load_bulk_data.load_recipes(open('test-data/recipe-data-1.txt'))
+    assert n == 0
+
+def test_bulk_load_2():
+    db._reset_db()
+
+    n = load_bulk_data.load_recipes(open('test-data/recipe-data-2.txt'))
+    assert n == 1, n
+
+    r = db.get_recipe('scotch on the rocks')
+    assert r
+    assert len(r.ingredients) == 1
+
+def test_bulk_load_3():
+    db._reset_db()
+
+    n = load_bulk_data.load_recipes(open('test-data/recipe-data-3.txt'))
+    assert n == 1, n
+    
+    r = db.get_recipe('vomit inducing martini')
+    assert r
+    assert len(r.ingredients) == 2
+
+def test_bulk_load_4():
+    db._reset_db()
+
+    n = load_bulk_data.load_recipes(open('test-data/recipe-data-4.txt'))
+    assert n == 2, n
+    
+    r = db.get_recipe('scotch on the rocks')
+    assert r
+    assert len(r.ingredients) == 1
+
+    r = db.get_recipe('vomit inducing martini')
+    assert r
+    assert len(r.ingredients) == 2
