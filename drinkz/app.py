@@ -2,31 +2,30 @@
 from wsgiref.simple_server import make_server
 import urlparse
 import simplejson
+import jinja2
 
-from drinkz import db
+from drinkz import db, recipes
+
+# this sets up jinja2 to load templates from the 'templates' directory
+loader = jinja2.FileSystemLoader('./templates')
+env = jinja2.Environment(loader=loader)
 
 dispatch = {
     '/' : 'index',
     '/content' : 'somefile',
     '/error' : 'error',
     '/recipes' : 'recipes',
+    '/recipes_add' : 'recipes_add',
     '/liquor_types' : 'liquor_types',
+    '/liquor_types_add' : 'liquor_types_add',
     '/inventory' : 'inventory',
+    '/inventory_add' : 'inventory_add',
     '/convert_form' : 'convert_form',
     '/do_convert' : 'do_convert',
     '/rpc'  : 'dispatch_rpc'
 }
 
 html_headers = [('Content-type', 'text/html')]
-
-style = """
-<style type='text/css'>
-h1 {color:red;}
-body {
-font-size: 14px;
-}
-</style>
-"""
 
 class SimpleApp(object):
     def __call__(self, environ, start_response):
@@ -48,60 +47,90 @@ class SimpleApp(object):
     def index(self, environ, start_response):
         start_response("200 OK", list(html_headers))
 
-        
-        return ["""\
-<html><head><title>Recipes</title></head>
-%s<body>
-<h1>Index</h1>
-<A href='recipes'>Recipes</a>
-<p>
-<a href='liquor_types'>Liquor types</a>
-<p>
-<a href='inventory'>Inventory</a>
-<p>
-<hr>
-<a href='convert_form'>Form to convert amounts</a>
-<hr>
+        template = env.get_template("index.html")
 
-<script>
-function myFunction()
-{
-alert("Hello! I am an alert box!");
-}
-</script>
-<input type="button" onclick="myFunction()" value="Show alert box" />
-</body>
-</html>
-""" % (style,)]
+        title = "index"
+        return str(template.render(locals()))
 
     def recipes(self, environ, start_response):
         start_response("200 OK", list(html_headers))
-        x = ["<html><head><title>Recipes</title>%s</head><body><h1>Recipes:</h1><p><ul>" % style]
 
-        for r in db.get_all_recipes():
-            x.append("<li> Recipe name: %s" % r.name)
+        title = "recipes"
+        recipes = [ r for r in db.get_all_recipes() ]
 
-        x.append("</ul></body></html>")
-
-        return x
+        template = env.get_template("recipes.html")
+        return str(template.render(locals()))
 
     def liquor_types(self, environ, start_response):
         start_response("200 OK", list(html_headers))
 
-        x = ["<html><head><title>Recipes</title>%s</head><body><h1>Liquor types</h1>:<p><ul>" % style]
-        for (mfg, liquor, typ) in db._bottle_types_db:
-            x.append("<li> %s - %s - %s" % (mfg, liquor, typ))
-        x.append("</ul></body></html>")
-        return x
+        title = "liquor types"
+
+        liquor_types = [ (m, l, t) for (m, l, t) in db._bottle_types_db ]
+        
+        template = env.get_template("liquor_types.html")
+        return str(template.render(locals()))
 
     def inventory(self, environ, start_response):
         start_response("200 OK", list(html_headers))
-        x = ["<html><head><title>Recipes</title>%s</head><body><h1>Inventory:</h1><p><ul>" % style]
 
-        for (mfg, liquor) in db.get_liquor_inventory():
-            x.append("<li> %s - %s" % (mfg, liquor))
-        x.append("</ul></body></html>")
-        return x
+        title = "inventory"
+        inventory = [ (m, l, db.get_liquor_amount(m, l)) \
+                      for (m, l) in db.get_liquor_inventory() ]
+        
+        template = env.get_template("inventory.html")
+        return str(template.render(locals()))
+
+    def inventory_add(self, environ, start_response):
+        formdata = environ['QUERY_STRING']
+        results = urlparse.parse_qs(formdata)
+
+        mfg = results['mfg'][0]
+        liquor = results['liquor'][0]
+        amount = results['amount'][0]
+        db.add_to_inventory(mfg, liquor, amount)
+        
+        headers = list(html_headers)
+        headers.append(('Location', '/inventory'))
+
+        start_response('302 Found', headers)
+        return ["Redirect to /inventory..."]
+
+    def recipes_add(self, environ, start_response):
+        formdata = environ['QUERY_STRING']
+        results = urlparse.parse_qs(formdata)
+
+        name = results['name'][0]
+        ingredients = results['ingredients'][0]
+
+        ingredients = ingredients.splitlines()
+        ingredients = [ x.strip() for x in ingredients ] # clean whitespace
+        ingredients = [ x for x in ingredients if x ]    # remove empty
+        ingredients = [ x.split(',') for x in ingredients ]
+
+        r = recipes.Recipe(name, ingredients)
+        db.add_recipe(r)
+        
+        headers = list(html_headers)
+        headers.append(('Location', '/recipes'))
+
+        start_response('302 Found', headers)
+        return ["Redirect to /recipes..."]
+    
+    def liquor_types_add(self, environ, start_response):
+        formdata = environ['QUERY_STRING']
+        results = urlparse.parse_qs(formdata)
+
+        mfg = results['mfg'][0]
+        liquor = results['liquor'][0]
+        typ = results['typ'][0]
+        db.add_bottle_type(mfg, liquor, typ)
+        
+        headers = list(html_headers)
+        headers.append(('Location', '/liquor_types'))
+
+        start_response('302 Found', headers)
+        return ["Redirect to /recipes..."]
 
     def convert_form(self, environ, start_response):
         start_response("200 OK", list(html_headers))
