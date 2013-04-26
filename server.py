@@ -2,6 +2,9 @@
 import random
 import socket
 import time
+from drinkz.app import SimpleApp
+
+the_app = SimpleApp()
 
 s = socket.socket()         # Create a socket object
 host = socket.gethostname() # Get local machine name
@@ -27,5 +30,38 @@ while True:
 
    print 'got entire request:', (buffer,)
 
-   c.send("HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\nHello, world.")
+   # now, parse the HTTP request.
+   lines = buffer.splitlines()
+   request_line = lines[0]
+   request_type, path, protocol = request_line.split()
+   print 'GOT', request_type, path, protocol
+
+   request_headers = lines[1:]                  # irrelevant, discard for GET.
+   
+   query_string = ""
+   if '?' in path:
+      path, query_string = path.split('?', 1)
+
+   # build environ & start_response
+   environ = {}
+   environ['PATH_INFO'] = path
+   environ['QUERY_STRING'] = query_string
+
+   d = {}
+   def start_response(status, headers):
+      d['status'] = status
+      d['headers'] = headers
+
+   results = the_app(environ, start_response)
+   # note -- start_response is called by the_app.
+
+   response_headers = []
+   for k, v in d['headers']:
+      h = "%s: %s" % (k, v)
+      response_headers.append(h)
+      
+   response = "\r\n".join(response_headers) + "\r\n\r\n" + "".join(results)
+
+   c.send("HTTP/1.0 %s\r\n" % d['status'])
+   c.send(response)
    c.close()
