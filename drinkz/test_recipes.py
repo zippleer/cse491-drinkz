@@ -121,3 +121,68 @@ class TestIngredients(object):
 
         missing = r.need_ingredients()
         assert missing == [('blended scotch', 500.0)]
+
+class TestIngredients(object):
+    def setUp(self):
+        db._reset_db()
+
+        r = recipes.Recipe('scotch on the rocks', [('blended scotch',
+                                                   '4 oz')])
+        db.add_recipe(r)
+        
+        r = recipes.Recipe('vomit inducing martini', [('orange juice',
+                                                      '6 oz'),
+                                                     ('vermouth',
+                                                      '1.5 oz')])
+        db.add_recipe(r)
+        
+        r = recipes.Recipe('vodka martini', [('unflavored vodka', '6 oz'),
+                                            ('vermouth', '1.5 oz')])
+        db.add_recipe(r)
+        
+        r = recipes.Recipe('whiskey bath', [('blended scotch', '2 liter')])
+        db.add_recipe(r)
+        
+    def test_filter_recipes_by_ingredients_1(self):
+        db.add_bottle_type('Johnnie Walker', 'black label', 'blended scotch')
+        db.add_to_inventory('Johnnie Walker', 'black label', '500 ml')
+        
+        all_recipes = [ r for r in db.get_all_recipes() ]
+        for r in all_recipes:
+            print r.name
+        print '---'
+        assert len(all_recipes) == 4
+        
+        x = recipes.filter_recipes_by_ingredients(all_recipes)
+        for r in x:
+            print r.name
+        assert len(x) == 1
+
+        r = db.get_recipe('scotch on the rocks')
+        assert x == [ r ]
+
+    def test_filter_recipes_by_ingredients_2(self):
+        db.add_bottle_type('Johnnie Walker', 'black label', 'blended scotch')
+        db.add_to_inventory('Johnnie Walker', 'black label', '500 ml')
+
+        db.add_bottle_type('Uncle Herman\'s', 'moonshine', 'blended scotch')
+        db.add_to_inventory('Uncle Herman\'s', 'moonshine', '5 liter')
+        
+        db.add_bottle_type('Gray Goose', 'vodka', 'unflavored vodka')
+        db.add_to_inventory('Gray Goose', 'vodka', '1 liter')
+
+        db.add_bottle_type('Rossi', 'extra dry vermouth', 'vermouth')
+        db.add_to_inventory('Rossi', 'extra dry vermouth', '24 oz')
+
+        all_recipes = [ r for r in db.get_all_recipes() ]
+        for r in all_recipes:
+            print r.name
+        assert len(all_recipes) == 4
+
+        x = recipes.filter_recipes_by_ingredients(all_recipes)
+        for r in x:
+            print r.name
+        assert len(x) == 3
+
+        r = db.get_recipe('vomit inducing martini')
+        assert r not in x

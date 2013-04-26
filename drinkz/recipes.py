@@ -25,3 +25,12 @@ class Recipe(object):
                 needed.append((generic_type, amount_needed - max_amount))
 
         return needed
+
+def filter_recipes_by_ingredients(recipe_list):
+    x = []
+    
+    for r in recipe_list:
+        if not r.need_ingredients():
+            x.append(r)
+
+    return x
