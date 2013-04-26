@@ -54,3 +54,39 @@ def test_json_inventory():
 
     x = make_rpc_call('get_liquor_inventory', [])
     assert x == [[u"Uncle Herman's", u'moonshine']]
+
+def test_add_bottle_type():
+    db._reset_db()
+
+    make_rpc_call('add_bottle_type',
+                  ('Uncle Herman\'s', 'moonshine', 'blended scotchX'))
+
+    # this will fail without the above working.
+    x = make_rpc_call('add_to_inventory',
+                      ('Uncle Herman\'s', 'moonshine', '5 liter'))
+    
+    x = make_rpc_call('get_liquor_inventory', [])
+    assert x == [[u"Uncle Herman's", u'moonshine']]
+
+def test_add_to_inventory():
+    db._reset_db()
+
+    db.add_bottle_type('Uncle Herman\'s', 'moonshine', 'blended scotch')
+
+    x = make_rpc_call('add_to_inventory',
+                      ('Uncle Herman\'s', 'moonshine', '5 liter'))
+    
+    x = make_rpc_call('get_liquor_inventory', [])
+    assert x == [[u"Uncle Herman's", u'moonshine']]
+
+def test_json_add_recipe():
+    db._reset_db()
+
+    db.add_bottle_type('Uncle Herman\'s', 'moonshine', 'blended scotch')
+    db.add_to_inventory('Uncle Herman\'s', 'moonshine', '5 liter')
+    
+    make_rpc_call('add_recipe',
+                  (('whiskey bath', [('blended scotch', '2 liter')])))
+
+    x = make_rpc_call('get_recipe_names', [])
+    assert 'whiskey bath' in x

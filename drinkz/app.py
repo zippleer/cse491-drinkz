@@ -211,6 +211,16 @@ Amount: <input type=text name=amount>
 
     def rpc_get_liquor_inventory(self):
         return [ (mfg, liquor) for (mfg, liquor) in db.get_liquor_inventory() ]
+
+    def rpc_add_recipe(self, name, ingredients):
+        r = recipes.Recipe(name, ingredients)
+        db.add_recipe(r)
+
+    def rpc_add_bottle_type(self, mfg, liquor, typ):
+        db.add_bottle_type(mfg, liquor, typ)
+
+    def rpc_add_to_inventory(self, mfg, liquor, amount):
+        db.add_to_inventory(mfg, liquor, amount)
     
 if __name__ == '__main__':
     import random, socket
