@@ -1,30 +1,37 @@
-from . import db
-
+import db
+    
 class Recipe(object):
-    def __init__(self, name, ingredients):
-        self.name = name
-        self.ingredients = ingredients
-        # you could also check here for properly formatted ingredients
+    _recipeName = ""
+    _myIngredients = set()
+    def __init__(self, name, ingredientList):
+        
+        self._myIngredients = set()
+        self._recipeName = name
+        for ingredient in ingredientList:
+            self._myIngredients.add(ingredient)
 
     def need_ingredients(self):
-        needed = []
-        for (generic_type, amount) in self.ingredients:
-            matching = db.check_inventory_for_type(generic_type)
+        myList = list()
+        for currentIngredient in self._myIngredients:
+            listOfMandLTuples = db.check_inventory_for_type(currentIngredient[0])
+            
+            amountInStock = 0
+            for myTuple in listOfMandLTuples:
+                val = db.get_liquor_amount(myTuple[0],myTuple[1])
+                if val>amountInStock:
+                    amountInStock = val
+            amountInDebt = amountInStock - db.convert_to_ml(currentIngredient[1])
+            
+            if ( amountInDebt < 0 ):
+                myList.append((currentIngredient[0],amountInDebt*-1.))
+        
+        return myList
+                    
+                
 
-            max_m = ''
-            max_l = ''
-            max_amount = 0.0
 
-            for (m, l, t) in matching:
-                if t > max_amount:
-                    max_amount = t
-
-            amount_needed = db.convert_to_ml(amount)
-
-            if max_amount < amount_needed:
-                needed.append((generic_type, amount_needed - max_amount))
-
-        return needed
+    #def __eq__(self, other): 
+        #return self._recipeName == other._recipeName
 
 def filter_recipes_by_ingredients(recipe_list):
     x = []

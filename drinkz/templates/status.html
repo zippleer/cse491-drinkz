@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if name1 %}
+   Your login username is {{ name1|e }}; your key is {{ name1_key|e }}.
+{% else %}
+   Successfully Logged Out.
+{% endif %}
+
+<hr>
+
+<a href='./'>Log in</a>
+
+{% endblock %}

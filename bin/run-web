@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 import sys
+import os
+import sqlite3
 import _mypath                          # get path into drinkz/ dir.
 from drinkz.app import SimpleApp
 from drinkz import db
@@ -11,9 +13,9 @@ if __name__ == '__main__':
     
     import random, socket
     port = random.randint(8000, 9999)
-    port = 8000
 
     db.load_db(filename)
+
     app = SimpleApp()
 
     httpd = make_server('', port, app)

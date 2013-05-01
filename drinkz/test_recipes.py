@@ -149,13 +149,13 @@ class TestIngredients(object):
         
         all_recipes = [ r for r in db.get_all_recipes() ]
         for r in all_recipes:
-            print r.name
+            print r._recipeName
         print '---'
         assert len(all_recipes) == 4
         
         x = recipes.filter_recipes_by_ingredients(all_recipes)
         for r in x:
-            print r.name
+            print r._recipeName
         assert len(x) == 1
 
         r = db.get_recipe('scotch on the rocks')
@@ -176,12 +176,12 @@ class TestIngredients(object):
 
         all_recipes = [ r for r in db.get_all_recipes() ]
         for r in all_recipes:
-            print r.name
+            print r._recipeName
         assert len(all_recipes) == 4
 
         x = recipes.filter_recipes_by_ingredients(all_recipes)
         for r in x:
-            print r.name
+            print r._recipeName
         assert len(x) == 3
 
         r = db.get_recipe('vomit inducing martini')
@@ -201,7 +201,7 @@ def test_bulk_load_2():
 
     r = db.get_recipe('scotch on the rocks')
     assert r
-    assert len(r.ingredients) == 1
+    assert len(r._myIngredients) == 1
 
 def test_bulk_load_3():
     db._reset_db()
@@ -211,7 +211,7 @@ def test_bulk_load_3():
     
     r = db.get_recipe('vomit inducing martini')
     assert r
-    assert len(r.ingredients) == 2
+    assert len(r._myIngredients) == 2
 
 def test_bulk_load_4():
     db._reset_db()
@@ -221,8 +221,8 @@ def test_bulk_load_4():
     
     r = db.get_recipe('scotch on the rocks')
     assert r
-    assert len(r.ingredients) == 1
+    assert len(r._myIngredients) == 1
 
     r = db.get_recipe('vomit inducing martini')
     assert r
-    assert len(r.ingredients) == 2
+    assert len(r._myIngredients) == 2

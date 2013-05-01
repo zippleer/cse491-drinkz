@@ -25,22 +25,27 @@ def main(args):
 
     r = recipes.Recipe('scotch on the rocks', [('blended scotch', '4 oz')])
     db.add_recipe(r)
+    db.add_rating(r._recipeName,8)
 
     r = recipes.Recipe('vodka martini', [('unflavored vodka', '6 oz'),
                                         ('vermouth', '1.5 oz')])
     db.add_recipe(r)
+    db.add_rating(r._recipeName,9)
 
     r = recipes.Recipe('vomit inducing martini', [('orange juice',
                                                   '6 oz'),
                                                  ('vermouth',
                                                   '1.5 oz')])
     db.add_recipe(r)
+    db.add_rating(r._recipeName,1)
 
     r = recipes.Recipe('whiskey bath', [('blended scotch', '2 liter')])
     db.add_recipe(r)
+    db.add_rating(r._recipeName,6)
 
     r = recipes.Recipe('whiskey lake', [('blended scotch', '6 liter')])
     db.add_recipe(r)
+    db.add_rating(r._recipeName,7)
 
     db.save_db(filename)
 

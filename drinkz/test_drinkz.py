@@ -120,7 +120,9 @@ def test_get_liquor_amount_4():
     n = load_bulk_data.load_inventory(fp)
 
     amount = db.get_liquor_amount('Johnnie Walker', 'Black Label')
-    assert amount == 2478.675, amount
+    assert amount == 2478.68, amount
+    print "AMOUNT: " 
+    print amount
 
 def test_get_liquor_amount_5():
     db._reset_db()

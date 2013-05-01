@@ -17,7 +17,7 @@ except OSError:
     pass
 
 # nav bar
-base_url = 'http://www.cse.msu.edu/~newrockm/cse491/drinkz'
+base_url = 'http://www.cse.msu.edu/~zippleer/cse491-linkz'
 index_link = '<a href="%s/index.html">Index</a>' % base_url
 liquor_types_link = '<a href="%s/liquor_types.html">Liquor Types</a>' % base_url
 inventory_link = '<a href="%s/inventory.html">Inventory</a>' % base_url
